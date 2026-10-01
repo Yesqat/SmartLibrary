@@ -1,0 +1,204 @@
+name: smartlibrary
+
+x-backend: &backend
+  image: smartlibrary-backend:local
+  environment:
+    APP_ENV: ${APP_ENV:-development}
+    FRONTEND_URL: ${FRONTEND_URL:-http://localhost:8080}
+    CORS_ORIGINS: ${CORS_ORIGINS:-["http://localhost:8080"]}
+    ALLOWED_HOSTS: ${ALLOWED_HOSTS:-["localhost","127.0.0.1","backend"]}
+    LIBRARY_TIMEZONE: ${LIBRARY_TIMEZONE:-UTC}
+    LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    POSTGRES_HOST: postgres
+    POSTGRES_PORT: 5432
+    POSTGRES_DB: ${POSTGRES_DB:-smartlibrary}
+    POSTGRES_USER: ${APP_DB_USER:-smartlibrary_app}
+    POSTGRES_PASSWORD: ${APP_DB_PASSWORD:?Run python scripts/init_database_env.py}
+    DATABASE_URL: ${DATABASE_URL:-}
+    REDIS_HOST: redis
+    REDIS_PORT: 6379
+    REDIS_PASSWORD: ${REDIS_PASSWORD:?Run python scripts/init_env.py}
+    REDIS_URL: ${REDIS_URL:-}
+    JWT_SECRET: ${JWT_SECRET:-}
+    QR_ENCRYPTION_KEY: ${QR_ENCRYPTION_KEY:-}
+    ACCESS_TOKEN_TTL: ${ACCESS_TOKEN_TTL:-900}
+    REFRESH_TOKEN_TTL: ${REFRESH_TOKEN_TTL:-2592000}
+    TRUST_PROXY_HEADERS: 'true'
+    AUTH_LOGIN_IP_LIMIT: ${AUTH_LOGIN_IP_LIMIT:-30}
+    AUTH_LOGIN_ACCOUNT_LIMIT: ${AUTH_LOGIN_ACCOUNT_LIMIT:-10}
+    AUTH_LOGIN_WINDOW_SECONDS: ${AUTH_LOGIN_WINDOW_SECONDS:-900}
+    AUTH_REGISTER_LIMIT: ${AUTH_REGISTER_LIMIT:-10}
+    AUTH_REFRESH_LIMIT: ${AUTH_REFRESH_LIMIT:-120}
+    UPLOAD_DIRECTORY: /app/var/uploads
+    MODEL_CACHE_DIRECTORY: /app/var/models
+    LLM_PROVIDER: ${LLM_PROVIDER:-}
+    LLM_MODEL: ${LLM_MODEL:-}
+    LLM_API_KEY: ${LLM_API_KEY:-}
+    EMBEDDING_MODEL: ${EMBEDDING_MODEL:-}
+    EMBEDDING_MODEL_REVISION: ${EMBEDDING_MODEL_REVISION:-}
+  init: true
+  networks: [application, data]
+  security_opt: [no-new-privileges:true]
+  depends_on:
+    postgres: {condition: service_healthy}
+    redis: {condition: service_healthy}
+  volumes:
+    - uploads:/app/var/uploads
+    - models:/app/var/models
+
+services:
+  database:
+    image: smartlibrary-backend:local
+    pull_policy: never
+    profiles: [database]
+    command: [python, -m, app.db.manage, upgrade]
+    networks: [data]
+    security_opt: [no-new-privileges:true]
+    depends_on:
+      postgres: {condition: service_healthy}
+    environment: &database-environment
+      APP_ENV: ${APP_ENV:-development}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-smartlibrary}
+      POSTGRES_USER: ${POSTGRES_USER:-smartlibrary}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run python scripts/init_env.py}
+      APP_DB_USER: ${APP_DB_USER:-smartlibrary_app}
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:?Run python scripts/init_database_env.py}
+      MIGRATION_DB_USER: ${MIGRATION_DB_USER:-smartlibrary_migrator}
+      MIGRATION_DB_PASSWORD: ${MIGRATION_DB_PASSWORD:?Run python scripts/init_database_env.py}
+      DEV_SEED_PASSWORD: ${DEV_SEED_PASSWORD:-}
+      QR_ENCRYPTION_KEY: ${QR_ENCRYPTION_KEY:-}
+      JWT_SECRET: ${JWT_SECRET:?Run python scripts/init_env.py}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?Run python scripts/init_env.py}
+  database-tests:
+    image: smartlibrary-backend:test
+    build: {context: ./backend, target: test}
+    profiles: [testing]
+    volumes: [./ml:/ml:ro]
+    command: [python, -m, app.db.manage, test]
+    networks: [data]
+    security_opt: [no-new-privileges:true]
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+    environment:
+      <<: *database-environment
+      APP_ENV: test
+  postgres:
+    image: pgvector/pgvector:0.8.2-pg17@sha256:feb68f4f15446397d8cac7f4fe48fe4586de83160d1fc48b46283312d1a33966
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-smartlibrary}
+      POSTGRES_USER: ${POSTGRES_USER:-smartlibrary}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run python scripts/init_env.py}
+    volumes: [postgres-data:/var/lib/postgresql/data]
+    networks: [data]
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
+    restart: unless-stopped
+
+  redis:
+    image: redis:7.4-alpine@sha256:858f009f9709ce576febc734aa78b8f6d624b82571f9ddb6bda4377c833b3499
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?Run python scripts/init_env.py}
+    command: [sh, -c, 'exec redis-server --appendonly yes --requirepass "$${REDIS_PASSWORD}"']
+    volumes: [redis-data:/data]
+    networks: [data]
+    healthcheck:
+      test: [CMD-SHELL, 'REDISCLI_AUTH="$${REDIS_PASSWORD}" redis-cli ping | grep -q PONG']
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    restart: unless-stopped
+
+  backend:
+    <<: *backend
+    build:
+      context: ./backend
+      target: runtime
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/ready', timeout=8)"]
+      interval: 10s
+      timeout: 9s
+      retries: 6
+      start_period: 15s
+
+  worker:
+    <<: *backend
+    pull_policy: never
+    command: [celery, -A, app.workers.celery_app:celery_app, worker, --loglevel=INFO, --concurrency=2, -Q, default, --hostname=celery@%h]
+    healthcheck:
+      test: [CMD, python, -m, app.workers.healthcheck]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  ml-worker:
+    <<: *backend
+    pull_policy: never
+    command: [celery, -A, app.workers.celery_app:celery_app, worker, --loglevel=INFO, --concurrency=1, -Q, ml, --hostname=celery@%h]
+    healthcheck:
+      test: [CMD, python, -m, app.workers.healthcheck]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  beat:
+    <<: *backend
+    pull_policy: never
+    command: [celery, -A, app.workers.celery_app:celery_app, beat, --loglevel=INFO, --scheduler=app.workers.scheduler:HealthyScheduler, --schedule=/app/var/beat/celerybeat-schedule]
+    healthcheck:
+      test: [CMD, python, -m, app.workers.scheduler]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    volumes:
+      - beat-data:/app/var/beat
+
+  frontend:
+    image: smartlibrary-frontend:local
+    build:
+      context: ./frontend
+      target: runtime
+    init: true
+    networks: [application]
+    security_opt: [no-new-privileges:true]
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+
+  nginx:
+    image: nginx:1.28-alpine@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236
+    ports: ['127.0.0.1:${HTTP_PORT:-8080}:80']
+    volumes: [./infra/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro]
+    networks: [application]
+    depends_on:
+      frontend: {condition: service_healthy}
+      backend: {condition: service_healthy}
+    healthcheck:
+      test: [CMD, wget, -q, -O, /dev/null, http://127.0.0.1/nginx-health]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+networks:
+  application:
+  data:
+    internal: true
+
+volumes:
+  postgres-data:
+  redis-data:
+  uploads:
+  models:
+  beat-data:

@@ -1,0 +1,93 @@
+# Grounded AI Librarian (PHASE 15)
+
+Reader-only `/assistant` provides persisted owned conversations, bounded history,
+starter questions, processing/error states and real book cards. Other Readers and
+staff cannot read a Reader's conversation. Core library services do not depend on
+an external LLM.
+
+## Architecture and grounding
+
+`LLMClient` is the provider boundary. The implemented `openai` adapter uses the
+Responses API with strict function schemas and a strict final presentation plan.
+The LLM interprets multilingual questions/follow-ups, selects read-only tools and
+ranks their returned references. It cannot supply arbitrary final factual prose.
+The server renders selected current evidence in Kazakh and validates every card
+against results retrieved in that turn. This deliberately constrained answer style
+prevents model-written availability, due dates, rules and invented catalog IDs.
+It is real LLM tool orchestration; factual formatting is deterministic backend code.
+No production fake provider or generated fallback answer exists.
+
+Allowlisted tools:
+
+- search_books / semantic_search_books: real existing search with bounded query,
+  availability/language filters and at most eight results; real search events persist.
+- get_book_details / check_book_availability: actual catalog/copy aggregation.
+- get_similar_books / get_recommendations: actual PHASE 13 algorithms and vectors.
+- get_my_borrowings / get_my_reservations: authenticated Reader only, ten/page;
+  no user_id input, account contacts, QR credentials or inventory identifiers sent.
+- get_library_rules: fresh seven-setting circulation policy from PostgreSQL.
+
+Tools revalidate the live Reader/session before execution. Unknown capabilities,
+extra arguments, SQL and write requests fail before dispatch. No tool issues,
+returns or reserves. Cards link to Book Details, where the Reader explicitly
+presses the normal reservation button and all existing business rules apply.
+Descriptions/user messages are untrusted; React escapes displayed content.
+Failures produce unavailable evidence, never a fabricated empty catalog.
+
+Final references are validated against this turn's tool outputs. Historical book
+cards refresh current availability when loaded. Historical answer text is labeled
+with its response time. Old facts are excluded from subsequent model context;
+the model receives previous intent/public book IDs and must query facts again.
+Context is capped at twenty messages and 16,000 characters. Each question is
+limited to 2,000 characters, four provider rounds and six tools, with a 60-second
+orchestration budget, up to 20 seconds per provider call and bounded HTTP output.
+
+## Storage and concurrency
+
+Existing ai_conversations/ai_messages/ai_message_books are used without a migration.
+Creation/message mutations are owned, Origin-protected and rate-limited through
+Redis: ten messages/Reader/minute, thirty/IP/minute, 200/Reader/day.
+Conversations cap at 500/Reader and 400 messages/conversation as resource bounds.
+
+Request UUIDs derive unique USER/ASSISTANT message IDs within the conversation.
+Successful retries return the stored answer; different content with the same key
+fails. Short transactions lock live User then owned Conversation, persist a pending
+turn, release locks before provider calls, and revalidate before persisting output.
+Concurrent turns receive AI_TURN_IN_PROGRESS. After 120 seconds an interrupted
+pending turn can be superseded safely; the older writer cannot overwrite it.
+Provider failures persist a safe error message/latency. Tool metadata stores only
+allowlisted tool names/status, provider/model and validated book references; no raw
+arguments, provider payloads, passwords, keys or credentials are logged.
+
+## Configuration and unavailable behavior
+
+Set private `LLM_PROVIDER=openai`, `LLM_MODEL` to a Responses/function-calling model
+available in the operator's account, and `LLM_API_KEY`. No model/account entitlement
+is presumed and no credential is committed. Restart the backend after changing
+configuration. The destination is fixed HTTPS api.openai.com with redirects disabled.
+Provider storage is disabled (`store=false`); bounded context and necessary tool
+data are still transmitted. The UI explains this and asks users not to send secrets.
+
+Missing/unsupported configuration, network failures, timeouts, refusals, invalid
+output and ungrounded references produce AI_SERVICE_UNAVAILABLE. Redis failure is
+closed safely. Catalog, standard search, local recommendations and circulation
+remain independent. New provider implementations belong behind LLMClient only.
+
+## APIs
+
+POST/GET `/api/v1/ai/conversations`; GET `/{id}` (paged newest-message window,
+chronological within each page); POST `/{id}/messages` with content/request_id.
+No client-selected owner. Returned message includes safe content, books, timestamp
+and optional error_code. Raw tool/provider/auth secrets are not API fields.
+
+## Verification and limitation
+
+PostgreSQL integration uses real services, Redis, actual E5 embeddings and storage;
+only the external provider is scripted. Adapter tests intercept only external HTTP.
+Browser verification exercised real unconfigured-provider failure and conversation
+persistence. A live authenticated external model response has not been verified:
+operator credentials/model access and an end-to-end multilingual quality evaluation
+remain external deployment requirements. No LLM quality or uptime is fabricated.
+
+Adapter references: [official function calling](https://developers.openai.com/api/docs/guides/function-calling)
+and [structured output](https://developers.openai.com/api/docs/guides/structured-outputs).

@@ -1,0 +1,12 @@
+{
+  "readers_with_three_distinct_loans": 0,
+  "distinct_titles": 0,
+  "minimum_readers": 20,
+  "minimum_titles": 20,
+  "method": "binary item cosine; minimum pair support 2; last distinct loan held out per Reader",
+  "serving_enabled": false,
+  "status": "INSUFFICIENT_DATA",
+  "metrics": null,
+  "data_sha256": "84f81591f0d2a9949643dc0662ef60156dd5d1e61f65ce44df4415802f2f5d57",
+  "generated_at": "2026-09-27T19:54:32.900456+00:00"
+}

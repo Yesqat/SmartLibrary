@@ -1,0 +1,74 @@
+[project]
+name = "smartlibrary-backend"
+version = "0.1.0"
+description = "SmartLibrary modular monolith"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+  "fastapi>=0.115,<1", "uvicorn[standard]>=0.34,<1",
+  "pydantic>=2.10,<3", "pydantic-settings>=2.8,<3",
+  "sqlalchemy>=2.0,<2.1", "alembic>=1.18,<2",
+  "psycopg[binary]>=3.2,<4", "pgvector>=0.3,<1",
+  "redis>=5,<8", "celery[redis]>=5.5,<6", "tzdata>=2025.1",
+  "argon2-cffi>=25,<26", "cryptography>=46,<49",
+  "PyJWT>=2.12,<3", "email-validator>=2.2,<3",
+  "pillow>=12,<13", "python-multipart>=0.0.20,<1",
+  "qrcode==8.2",
+  "sentence-transformers>=5,<7", "torch>=2.6,<3",
+  "scikit-learn>=1.7,<2", "numpy>=2,<3",
+  "httpx>=0.28,<1",
+  "reportlab>=4.4,<5", "openpyxl>=3.1,<4",
+]
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "httpx>=0.28,<1", "ruff>=0.11,<1", "mypy>=1.15,<2", "pyyaml>=6,<7", "types-PyYAML>=6", "pypdf>=6,<7"]
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux' or sys_platform == 'win32'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.pytest.ini_options]
+testpaths = ["app/tests"]
+pythonpath = ["."]
+addopts = "-ra"
+cache_dir = "var/pytest-cache"
+markers = ["integration: requires live PostgreSQL and Redis"]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+known-third-party = ["alembic"]
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+files = ["app"]
+exclude = ["app/tests"]
+
+[[tool.mypy.overrides]]
+module = ["celery", "celery.*", "kombu", "kombu.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["pgvector.*", "qrcode", "qrcode.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["sklearn", "sklearn.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["reportlab", "reportlab.*", "openpyxl", "openpyxl.*"]
+ignore_missing_imports = true

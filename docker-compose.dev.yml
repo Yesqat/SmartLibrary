@@ -1,0 +1,44 @@
+services:
+  database:
+    image: smartlibrary-backend:dev
+    volumes:
+      - ./backend/app:/app/app
+      - ./backend/alembic:/app/alembic
+      - ./backend/alembic.ini:/app/alembic.ini:ro
+  backend:
+    image: smartlibrary-backend:dev
+    build: {target: development}
+    command: [uvicorn, app.main:create_app, --factory, --host, 0.0.0.0, --port, '8000', --reload, --no-access-log]
+    environment:
+      WATCHFILES_FORCE_POLLING: 'true'
+    volumes:
+      - ./backend/app:/app/app
+      - ./backend/alembic:/app/alembic:ro
+      - ./backend/alembic.ini:/app/alembic.ini:ro
+  worker:
+    image: smartlibrary-backend:dev
+    volumes: [./backend/app:/app/app]
+  beat:
+    image: smartlibrary-backend:dev
+    volumes: [./backend/app:/app/app]
+  ml-worker:
+    image: smartlibrary-backend:dev
+    volumes: [./backend/app:/app/app]
+  frontend:
+    image: smartlibrary-frontend:dev
+    build: {target: development}
+    # Turbopack dev omitted nested dynamic routes on this Windows bind mount.
+    # Webpack discovers the same source tree correctly; production build is unchanged.
+    command: [npm, run, dev, --, --webpack]
+    environment:
+      WATCHPACK_POLLING: '1000'
+    volumes:
+      - ./frontend/app:/app/app
+      - ./frontend/components:/app/components
+      - ./frontend/features:/app/features
+      - ./frontend/hooks:/app/hooks
+      - ./frontend/lib:/app/lib
+      - ./frontend/locales:/app/locales
+      - ./frontend/services:/app/services
+      - ./frontend/types:/app/types
+      - ./frontend/proxy.ts:/app/proxy.ts:ro

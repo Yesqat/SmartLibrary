@@ -1,0 +1,364 @@
+{
+  "revision": "f0c7479b3f8d0b0c93bb1d7a4c85f94f33ea752e91b904b346ef59c33d86c399",
+  "labels": [
+    "Artificial Intelligence",
+    "Biography",
+    "Business",
+    "Fiction",
+    "History",
+    "Machine Learning",
+    "Philosophy",
+    "Programming",
+    "Psychology",
+    "Science"
+  ],
+  "classical_threshold": 0.45,
+  "embedding_threshold": 0.8116545353204155,
+  "embedding_model": "intfloat/multilingual-e5-base",
+  "embedding_revision": "d128750597153bb5987e10b1c3493a34e5a4502a",
+  "dimension": 768,
+  "source_recipe": "categorization-v1",
+  "dataset_sha256": "bf15f64c7f0c9f57c3605a1b3310b1dbe61d8ce37c1c753536c6c33945cbbced",
+  "generated_at": "2026-09-27T19:43:04.565930+00:00",
+  "metrics": {
+    "seed": 42,
+    "splits": {
+      "training": [
+        "seed-12",
+        "seed-4",
+        "seed-6",
+        "seed-3",
+        "seed-5",
+        "seed-11",
+        "seed-2",
+        "seed-9"
+      ],
+      "validation": [
+        "seed-7",
+        "seed-10"
+      ],
+      "test": [
+        "seed-1",
+        "seed-8"
+      ]
+    },
+    "training_label_counts": {
+      "Artificial Intelligence": 1,
+      "Biography": 1,
+      "Business": 2,
+      "Fiction": 1,
+      "History": 1,
+      "Machine Learning": 1,
+      "Philosophy": 2,
+      "Programming": 3,
+      "Psychology": 0,
+      "Science": 0
+    },
+    "training_warnings": [
+      "Label not 8 is present in all training examples.",
+      "Label not 9 is present in all training examples."
+    ],
+    "tfidf_validation": {
+      "micro": {
+        "precision": 0.3333333333333333,
+        "recall": 0.3333333333333333,
+        "f1": 0.3333333333333333
+      },
+      "macro": {
+        "precision": 0.1,
+        "recall": 0.1,
+        "f1": 0.1
+      },
+      "per_category": {
+        "Artificial Intelligence": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Biography": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Business": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Fiction": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1
+        },
+        "History": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Machine Learning": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Philosophy": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Programming": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Psychology": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 1
+        },
+        "Science": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 1
+        }
+      }
+    },
+    "tfidf_test": {
+      "micro": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "macro": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "per_category": {
+        "Artificial Intelligence": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Biography": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Business": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Fiction": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 1
+        },
+        "History": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 1
+        },
+        "Machine Learning": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Philosophy": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Programming": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Psychology": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 1
+        },
+        "Science": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        }
+      }
+    },
+    "embedding_validation": {
+      "micro": {
+        "precision": 0.6666666666666666,
+        "recall": 0.6666666666666666,
+        "f1": 0.6666666666666666
+      },
+      "macro": {
+        "precision": 0.2,
+        "recall": 0.2,
+        "f1": 0.2
+      },
+      "per_category": {
+        "Artificial Intelligence": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Biography": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Business": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Fiction": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1
+        },
+        "History": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Machine Learning": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Philosophy": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Programming": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Psychology": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 1
+        },
+        "Science": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1
+        }
+      }
+    },
+    "embedding_test": {
+      "micro": {
+        "precision": 0.6666666666666666,
+        "recall": 0.6666666666666666,
+        "f1": 0.6666666666666666
+      },
+      "macro": {
+        "precision": 0.2,
+        "recall": 0.2,
+        "f1": 0.2
+      },
+      "per_category": {
+        "Artificial Intelligence": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Biography": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Business": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Fiction": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 1
+        },
+        "History": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1
+        },
+        "Machine Learning": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Philosophy": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Programming": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "Psychology": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1
+        },
+        "Science": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        }
+      }
+    },
+    "limitation": "Small curated dataset. Sparse/absent training labels and tiny holdouts cannot establish general accuracy. No test sample used to fit vocabulary/classifiers or choose thresholds.",
+    "libraries": {
+      "scikit-learn": "1.9.1",
+      "numpy": "2.5.3",
+      "sentence-transformers": "6.1.0"
+    }
+  }
+}

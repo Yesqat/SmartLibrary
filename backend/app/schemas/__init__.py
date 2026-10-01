@@ -1,0 +1,1 @@
+"""SmartLibrary app schemas package."""

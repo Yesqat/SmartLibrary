@@ -1,0 +1,1 @@
+"""SmartLibrary app db package."""

@@ -1,0 +1,516 @@
+.home {
+  min-height: 100vh;
+  background: #f8f8f2;
+  color: #073c36;
+}
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(112deg, #f0f6ef 2%, #d7e9df 35%, #8db8ab 100%);
+}
+
+.hero::before,
+.hero::after {
+  position: absolute;
+  z-index: -1;
+  content: "";
+  pointer-events: none;
+}
+
+.hero::before {
+  inset: -52% 33% -2% -8%;
+  border-radius: 0 0 52% 38%;
+  background: linear-gradient(140deg, #ffffff73, #9ec8b93b);
+  transform: rotate(-12deg);
+}
+
+.hero::after {
+  width: 610px;
+  height: 690px;
+  right: 1%;
+  top: 24px;
+  border-radius: 49% 51% 33% 67% / 44% 42% 58% 56%;
+  background: linear-gradient(135deg, #d8eee2b3, #bcddcc29);
+  transform: rotate(24deg);
+  box-shadow:
+    -175px 170px 0 -30px #b5dcca80,
+    -390px 400px 0 -85px #d7ede17a;
+}
+
+.heroInner {
+  position: relative;
+  max-width: 1420px;
+  min-height: 518px;
+  margin-inline: auto;
+  padding: 38px 24px 64px;
+}
+
+.logo {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.7px;
+  border-radius: 4px;
+}
+
+.logo svg {
+  width: 38px;
+  height: 38px;
+  fill: #1a675c;
+  stroke: #f0f7ee;
+  stroke-width: 1.2;
+  filter: drop-shadow(1px 1px 0 #18594e);
+}
+
+.intro {
+  position: relative;
+  z-index: 1;
+  margin-top: 50px;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.eyebrow {
+  margin-bottom: 10px;
+  color: #25665d;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.heading {
+  max-width: 900px;
+  font-size: clamp(42px, 4.3vw, 68px);
+  font-weight: 750;
+  letter-spacing: -1.9px;
+  line-height: 1.12;
+  text-wrap: balance;
+}
+
+.description {
+  max-width: 615px;
+  margin-top: 4px;
+  color: #386660;
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+.search {
+  display: flex;
+  width: 700px;
+  max-width: 100%;
+  margin-top: 32px;
+  gap: 0;
+}
+
+.searchField {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  gap: 18px;
+  border: 1px solid #ffffffb3;
+  border-radius: 10px;
+  background: #ffffffed;
+  padding: 0 18px;
+  box-shadow: 0 4px 18px #285e4804;
+}
+
+.searchField svg {
+  flex-shrink: 0;
+  width: 23px;
+  height: 23px;
+}
+
+.searchField input {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  border-radius: 4px;
+  background: transparent;
+  font-size: 16px;
+  color: #123e37;
+}
+
+.searchField input::placeholder {
+  color: #5b7b74;
+  opacity: 1;
+}
+
+.home .primaryButton,
+.home .secondaryButton {
+  min-height: 49px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  padding: 12px 26px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  transition:
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.home .primaryButton {
+  min-width: 103px;
+  background: #126054;
+  color: #fff;
+  border-color: #0d594d;
+  box-shadow:
+    inset 0 1px 0 #ffffff1f,
+    0 3px 8px #1d5c4510;
+}
+
+.home .primaryButton:hover {
+  background: #0a4c42;
+}
+
+.home .secondaryButton {
+  color: #073c36;
+  background: #f0f7ef80;
+  border-color: #a6cbbd;
+}
+
+.home .secondaryButton:hover {
+  background: #f4faf2d9;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 23px;
+}
+
+.actions a:first-child {
+  padding-inline: 20px;
+}
+
+.illustration {
+  position: absolute;
+  pointer-events: none;
+  width: 600px;
+  right: -12px;
+  bottom: -90px;
+}
+
+.illustration img {
+  width: 100%;
+  height: auto;
+}
+
+.popular {
+  max-width: 1420px;
+  margin-inline: auto;
+  padding: 22px 24px 56px;
+}
+
+/* Scope the existing recommendation/card presentation to Home only.
+   Data fetching, cover URLs, links and impression tracking stay in their components. */
+.popular > section {
+  margin-top: 0;
+}
+
+.popular > section > h2 {
+  margin-bottom: 17px;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+}
+
+.popular > section > div:has(article) {
+  gap: 16px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.popular > section > div > div:has(> article) {
+  min-width: 0;
+  padding: 19px 26px 18px;
+  border: 1px solid #e1ece5;
+  border-radius: 16px;
+  background: #ffffffed;
+  box-shadow: 0 5px 20px #23634c08;
+  overflow-wrap: anywhere;
+}
+
+.popular article {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.popular article > a {
+  gap: 13px;
+  border-radius: 4px;
+}
+
+.popular article > a > div {
+  width: 154px;
+  max-width: 100%;
+  height: 185px;
+  aspect-ratio: auto;
+  border-radius: 5px;
+  background: transparent;
+}
+
+.popular article img {
+  object-position: left center;
+  filter: drop-shadow(0 3px 4px #173c3426);
+}
+
+.popular article > a > div:has(> svg) {
+  border: 1px solid #b1cabc;
+  border-left: 7px solid #789e8b;
+  background: linear-gradient(105deg, #c5dac8, #e5eddf 52%, #cfdfcd);
+  box-shadow:
+    inset 3px 0 0 #ffffff59,
+    2px 4px 8px #244e3d14;
+}
+
+.popular article > a > div > svg {
+  width: 46px;
+  height: 46px;
+  color: #658976;
+  stroke-width: 1.2;
+}
+
+.popular article h2 {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.4px;
+}
+
+.popular article > p:nth-of-type(1) {
+  margin-top: 3px;
+  font-size: 16px;
+  color: #33796a;
+}
+
+.popular article > p:nth-of-type(2) {
+  margin-top: 6px;
+  font-size: 15px;
+}
+
+.popular article > p:nth-of-type(3) {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #49625c;
+  opacity: 1;
+}
+
+.popular article + p {
+  margin-top: 13px;
+  color: #294b43;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+@media (min-width: 1100px) and (max-width: 1399px) {
+  .heroInner,
+  .popular {
+    padding-inline: 48px;
+  }
+
+  .search {
+    width: 610px;
+  }
+
+  .description {
+    max-width: 575px;
+  }
+
+  .illustration {
+    width: 500px;
+    right: -8px;
+    bottom: -72px;
+  }
+}
+
+@media (max-width: 1099px) {
+  .heroInner {
+    min-height: 600px;
+    padding: 28px 32px 50px;
+  }
+
+  .intro {
+    margin-top: 46px;
+  }
+
+  .heading {
+    max-width: 700px;
+    font-size: clamp(42px, 5.6vw, 58px);
+  }
+
+  .description,
+  .search {
+    max-width: min(560px, 62vw);
+  }
+
+  .description {
+    font-size: 18px;
+  }
+
+  .illustration {
+    width: 420px;
+    right: 12px;
+    bottom: -64px;
+  }
+
+  .popular {
+    padding-inline: 32px;
+  }
+
+  .popular > section > div:has(article) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 640px) and (max-width: 899px) {
+  .heroInner {
+    min-height: auto;
+    padding-bottom: 0;
+  }
+
+  .description,
+  .search {
+    max-width: 100%;
+  }
+
+  .illustration {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    width: 330px;
+    margin: -20px 0 -50px auto;
+  }
+}
+
+@media (max-width: 639px) {
+  .heroInner {
+    min-height: auto;
+    padding: 25px 22px 0;
+  }
+
+  .logo {
+    gap: 10px;
+    font-size: 23px;
+  }
+
+  .logo svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .intro {
+    margin-top: 40px;
+  }
+
+  .eyebrow {
+    font-size: 15px;
+  }
+
+  .heading {
+    font-size: clamp(35px, 9.2vw, 48px);
+    letter-spacing: -1px;
+    line-height: 1.14;
+    text-wrap: initial;
+  }
+
+  .description {
+    max-width: 100%;
+    margin-top: 16px;
+    font-size: 17px;
+    line-height: 1.55;
+  }
+
+  .search {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 25px;
+  }
+
+  .searchField {
+    padding-inline: 10px;
+    gap: 8px;
+  }
+
+  .searchField svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .searchField input {
+    font-size: 14px;
+  }
+
+  .home .primaryButton,
+  .home .secondaryButton {
+    min-width: auto;
+    padding-inline: 19px;
+    font-size: 15px;
+  }
+
+  .search .primaryButton {
+    padding-inline: 14px;
+  }
+
+  .actions {
+    gap: 10px;
+    margin-top: 17px;
+  }
+
+  .actions a:first-child {
+    flex-basis: 100%;
+  }
+
+  .actions a:not(:first-child) {
+    flex: 1;
+  }
+
+  .illustration {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    width: min(300px, 100%);
+    margin: -25px -5px -37px auto;
+  }
+
+  .hero::after {
+    width: 430px;
+    height: 490px;
+    top: auto;
+    bottom: -110px;
+    right: -140px;
+  }
+
+  .popular {
+    padding: 25px 22px 40px;
+  }
+
+  .popular > section > h2 {
+    font-size: 25px;
+  }
+
+  .popular > section > div:has(article) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .popular > section > div > div:has(> article) {
+    padding: 22px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home .primaryButton,
+  .home .secondaryButton {
+    transition: none;
+  }
+}

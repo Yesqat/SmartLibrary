@@ -1,0 +1,57 @@
+log_format safe '$request_id $request_method $status $request_time';
+server {
+    listen 80 default_server;
+    server_name ${PUBLIC_HOST};
+    server_tokens off;
+    access_log /var/log/nginx/access.log safe;
+    location = /nginx-health { access_log off; return 200 'ok'; }
+    location / { return 308 ${PUBLIC_ORIGIN}$request_uri; }
+}
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name ${PUBLIC_HOST};
+    server_tokens off;
+    ssl_certificate /etc/nginx/tls/fullchain.pem;
+    ssl_certificate_key /etc/nginx/tls/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
+    ssl_session_tickets off;
+    client_max_body_size 10m;
+    client_body_timeout 15s;
+    send_timeout 30s;
+    access_log /var/log/nginx/access.log safe;
+    add_header Strict-Transport-Security 'max-age=31536000' always;
+    add_header X-Content-Type-Options nosniff always;
+    add_header Referrer-Policy strict-origin-when-cross-origin always;
+    add_header X-Frame-Options DENY always;
+    resolver 127.0.0.11 valid=10s ipv6=off;
+    set $backend http://backend:8000;
+    set $frontend http://frontend:3000;
+    # Only the configured canonical origin is accepted. Never trust incoming forwarding headers.
+    if ($host != '${PUBLIC_HOST}') { return 421; }
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_set_header X-Forwarded-Host $host;
+    proxy_set_header X-Forwarded-Port $server_port;
+    proxy_set_header Forwarded '';
+    proxy_set_header Connection '';
+    proxy_http_version 1.1;
+    proxy_connect_timeout 5s;
+    proxy_send_timeout 30s;
+    proxy_read_timeout 75s;
+    error_page 413 = @too_large;
+    location @too_large {
+        default_type application/json;
+        return 413 '{"error":{"code":"UPLOAD_TOO_LARGE","message":"Файл өлшемі тым үлкен.","details":null}}';
+    }
+    location = /nginx-health { access_log off; return 200 'ok'; }
+    location /api/ { proxy_pass $backend; }
+    location = /docs { return 404; }
+    location = /openapi.json { return 404; }
+    location / { proxy_pass $frontend; }
+}

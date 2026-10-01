@@ -1,0 +1,710 @@
+{
+  "libraries": {
+    "sentence-transformers": "6.1.0",
+    "torch": "2.14.0+cpu",
+    "transformers": "5.17.0",
+    "numpy": "2.5.3"
+  },
+  "generated_at": "2026-09-27T19:42:44.419783+00:00",
+  "dataset_sha256": "66cea9dc3acf3f01bf5ed458f19e753b8facec34b5c6704abc6cb4e4495cceb1",
+  "source_recipe": "bibliography-v1",
+  "selection": "Highest validation MRR; CPU query time breaks ties. Test split not used for selection.",
+  "selected_model": "intfloat/multilingual-e5-base",
+  "results": [
+    {
+      "model": "intfloat/multilingual-e5-small",
+      "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+      "dimension": 384,
+      "metrics": {
+        "validation/all": {
+          "n": 18,
+          "mrr": 0.9444444444444444,
+          "recall_at_1": 0.8888888888888888,
+          "recall_at_3": 1.0
+        },
+        "validation/kk": {
+          "n": 6,
+          "mrr": 0.9166666666666666,
+          "recall_at_1": 0.8333333333333334,
+          "recall_at_3": 1.0
+        },
+        "validation/ru": {
+          "n": 6,
+          "mrr": 0.9166666666666666,
+          "recall_at_1": 0.8333333333333334,
+          "recall_at_3": 1.0
+        },
+        "validation/en": {
+          "n": 6,
+          "mrr": 1.0,
+          "recall_at_1": 1.0,
+          "recall_at_3": 1.0
+        },
+        "test/all": {
+          "n": 18,
+          "mrr": 0.9212962962962963,
+          "recall_at_1": 0.8888888888888888,
+          "recall_at_3": 0.9444444444444444
+        },
+        "test/kk": {
+          "n": 6,
+          "mrr": 0.8888888888888888,
+          "recall_at_1": 0.8333333333333334,
+          "recall_at_3": 1.0
+        },
+        "test/ru": {
+          "n": 6,
+          "mrr": 0.875,
+          "recall_at_1": 0.8333333333333334,
+          "recall_at_3": 0.8333333333333334
+        },
+        "test/en": {
+          "n": 6,
+          "mrr": 1.0,
+          "recall_at_1": 1.0,
+          "recall_at_3": 1.0
+        }
+      },
+      "batch_query_ms_per_item": 13.927605555687073,
+      "total_seconds": 17.873227099997166,
+      "queries": [
+        {
+          "split": "validation",
+          "language": "kk",
+          "q": "Қазақ ақынының өмірі мен қоғам туралы тарихи роман",
+          "title": "Абай жолы",
+          "rank": 1,
+          "first": "Абай жолы"
+        },
+        {
+          "split": "validation",
+          "language": "ru",
+          "q": "Исторический роман о казахском поэте и переменах в обществе",
+          "title": "Абай жолы",
+          "rank": 1,
+          "first": "Абай жолы"
+        },
+        {
+          "split": "validation",
+          "language": "en",
+          "q": "A historical novel about a Kazakh poet and society",
+          "title": "Абай жолы",
+          "rank": 1,
+          "first": "Абай жолы"
+        },
+        {
+          "split": "validation",
+          "language": "kk",
+          "q": "Бағдарлама кодын түсінікті етіп жазу және тестілеу",
+          "title": "Clean Code",
+          "rank": 1,
+          "first": "Clean Code"
+        },
+        {
+          "split": "validation",
+          "language": "ru",
+          "q": "Как писать понятные маленькие функции и поддерживать программы",
+          "title": "Clean Code",
+          "rank": 1,
+          "first": "Clean Code"
+        },
+        {
+          "split": "validation",
+          "language": "en",
+          "q": "How to write readable small functions and maintain software",
+          "title": "Clean Code",
+          "rank": 1,
+          "first": "Clean Code"
+        },
+        {
+          "split": "validation",
+          "language": "kk",
+          "q": "Python бағдарламалауды нөлден жобалар арқылы үйрену",
+          "title": "Python Crash Course",
+          "rank": 2,
+          "first": "Deep Learning with Python"
+        },
+        {
+          "split": "validation",
+          "language": "ru",
+          "q": "Начать программировать на Python с практических проектов",
+          "title": "Python Crash Course",
+          "rank": 1,
+          "first": "Python Crash Course"
+        },
+        {
+          "split": "validation",
+          "language": "en",
+          "q": "Beginner introduction to Python syntax with practical projects",
+          "title": "Python Crash Course",
+          "rank": 1,
+          "first": "Python Crash Course"
+        },
+        {
+          "split": "validation",
+          "language": "kk",
+          "q": "Адамгершілік пен еңбек және білім туралы ойлар",
+          "title": "Қара сөздер",
+          "rank": 1,
+          "first": "Қара сөздер"
+        },
+        {
+          "split": "validation",
+          "language": "ru",
+          "q": "Размышления о нравственности, труде и образовании",
+          "title": "Қара сөздер",
+          "rank": 2,
+          "first": "Преступление и наказание"
+        },
+        {
+          "split": "validation",
+          "language": "en",
+          "q": "Reflections on morality, education and honest work",
+          "title": "Қара сөздер",
+          "rank": 1,
+          "first": "Қара сөздер"
+        },
+        {
+          "split": "validation",
+          "language": "kk",
+          "q": "Күнделікті шағын әрекеттермен жақсы әдет қалыптастыру",
+          "title": "Atomic Habits",
+          "rank": 1,
+          "first": "Atomic Habits"
+        },
+        {
+          "split": "validation",
+          "language": "ru",
+          "q": "Как маленькие ежедневные действия помогают менять привычки",
+          "title": "Atomic Habits",
+          "rank": 1,
+          "first": "Atomic Habits"
+        },
+        {
+          "split": "validation",
+          "language": "en",
+          "q": "Build better habits through tiny repeated everyday actions",
+          "title": "Atomic Habits",
+          "rank": 1,
+          "first": "Atomic Habits"
+        },
+        {
+          "split": "validation",
+          "language": "kk",
+          "q": "Ғарыш, уақыт және қара құрдымдар туралы түсінікті кітап",
+          "title": "A Brief History of Time",
+          "rank": 1,
+          "first": "A Brief History of Time"
+        },
+        {
+          "split": "validation",
+          "language": "ru",
+          "q": "Доступное объяснение космоса, времени и черных дыр",
+          "title": "A Brief History of Time",
+          "rank": 1,
+          "first": "A Brief History of Time"
+        },
+        {
+          "split": "validation",
+          "language": "en",
+          "q": "An accessible explanation of cosmology and black holes",
+          "title": "A Brief History of Time",
+          "rank": 1,
+          "first": "A Brief History of Time"
+        },
+        {
+          "split": "test",
+          "language": "kk",
+          "q": "Нейрондық желілерді Python арқылы жаттықтыруды үйренгім келеді",
+          "title": "Deep Learning with Python",
+          "rank": 1,
+          "first": "Deep Learning with Python"
+        },
+        {
+          "split": "test",
+          "language": "ru",
+          "q": "Практическое обучение нейронных сетей на Python",
+          "title": "Deep Learning with Python",
+          "rank": 1,
+          "first": "Deep Learning with Python"
+        },
+        {
+          "split": "test",
+          "language": "en",
+          "q": "Practical training of neural networks in Python",
+          "title": "Deep Learning with Python",
+          "rank": 1,
+          "first": "Deep Learning with Python"
+        },
+        {
+          "split": "test",
+          "language": "kk",
+          "q": "Он тоғызыншы ғасырдағы Ресей отбасылары мен соғыс туралы роман",
+          "title": "Война и мир",
+          "rank": 1,
+          "first": "Война и мир"
+        },
+        {
+          "split": "test",
+          "language": "ru",
+          "q": "Роман о судьбах семей во время войны в России XIX века",
+          "title": "Война и мир",
+          "rank": 1,
+          "first": "Война и мир"
+        },
+        {
+          "split": "test",
+          "language": "en",
+          "q": "A novel about Russian families during nineteenth century war",
+          "title": "Война и мир",
+          "rank": 1,
+          "first": "Война и мир"
+        },
+        {
+          "split": "test",
+          "language": "kk",
+          "q": "Қылмыс жасаған адамның ар-ұжданы мен жауапкершілігі туралы шығарма",
+          "title": "Преступление и наказание",
+          "rank": 1,
+          "first": "Преступление и наказание"
+        },
+        {
+          "split": "test",
+          "language": "ru",
+          "q": "Нравственный выбор и ответственность человека после преступления",
+          "title": "Преступление и наказание",
+          "rank": 1,
+          "first": "Преступление и наказание"
+        },
+        {
+          "split": "test",
+          "language": "en",
+          "q": "A novel exploring conscience and responsibility after committing a crime",
+          "title": "Преступление и наказание",
+          "rank": 1,
+          "first": "Преступление и наказание"
+        },
+        {
+          "split": "test",
+          "language": "kk",
+          "q": "Кәсіп ашқанда тұтынушы пікірін пайдаланып идеяны тексеру",
+          "title": "The Lean Startup",
+          "rank": 1,
+          "first": "The Lean Startup"
+        },
+        {
+          "split": "test",
+          "language": "ru",
+          "q": "Проверка бизнес-гипотез через обратную связь покупателей",
+          "title": "The Lean Startup",
+          "rank": 1,
+          "first": "The Lean Startup"
+        },
+        {
+          "split": "test",
+          "language": "en",
+          "q": "Test business assumptions using customer feedback and iteration",
+          "title": "The Lean Startup",
+          "rank": 1,
+          "first": "The Lean Startup"
+        },
+        {
+          "split": "test",
+          "language": "kk",
+          "q": "Әділетті қоғам мен мемлекеттің құрылымы туралы философия",
+          "title": "The Republic",
+          "rank": 1,
+          "first": "The Republic"
+        },
+        {
+          "split": "test",
+          "language": "ru",
+          "q": "Философский диалог о справедливости и устройстве общества",
+          "title": "The Republic",
+          "rank": 1,
+          "first": "The Republic"
+        },
+        {
+          "split": "test",
+          "language": "en",
+          "q": "A philosophical discussion of justice and the ideal society",
+          "title": "The Republic",
+          "rank": 1,
+          "first": "The Republic"
+        },
+        {
+          "split": "test",
+          "language": "kk",
+          "q": "Apple негізін қалаушының өмірі мен басқаруы туралы өмірбаян",
+          "title": "Steve Jobs",
+          "rank": 3,
+          "first": "Преступление и наказание"
+        },
+        {
+          "split": "test",
+          "language": "ru",
+          "q": "Биография основателя Apple и его подход к руководству",
+          "title": "Steve Jobs",
+          "rank": 4,
+          "first": "Преступление и наказание"
+        },
+        {
+          "split": "test",
+          "language": "en",
+          "q": "Biography of the Apple founder and his approach to management",
+          "title": "Steve Jobs",
+          "rank": 1,
+          "first": "Steve Jobs"
+        }
+      ]
+    },
+    {
+      "model": "intfloat/multilingual-e5-base",
+      "revision": "d128750597153bb5987e10b1c3493a34e5a4502a",
+      "dimension": 768,
+      "metrics": {
+        "validation/all": {
+          "n": 18,
+          "mrr": 0.9722222222222222,
+          "recall_at_1": 0.9444444444444444,
+          "recall_at_3": 1.0
+        },
+        "validation/kk": {
+          "n": 6,
+          "mrr": 0.9166666666666666,
+          "recall_at_1": 0.8333333333333334,
+          "recall_at_3": 1.0
+        },
+        "validation/ru": {
+          "n": 6,
+          "mrr": 1.0,
+          "recall_at_1": 1.0,
+          "recall_at_3": 1.0
+        },
+        "validation/en": {
+          "n": 6,
+          "mrr": 1.0,
+          "recall_at_1": 1.0,
+          "recall_at_3": 1.0
+        },
+        "test/all": {
+          "n": 18,
+          "mrr": 1.0,
+          "recall_at_1": 1.0,
+          "recall_at_3": 1.0
+        },
+        "test/kk": {
+          "n": 6,
+          "mrr": 1.0,
+          "recall_at_1": 1.0,
+          "recall_at_3": 1.0
+        },
+        "test/ru": {
+          "n": 6,
+          "mrr": 1.0,
+          "recall_at_1": 1.0,
+          "recall_at_3": 1.0
+        },
+        "test/en": {
+          "n": 6,
+          "mrr": 1.0,
+          "recall_at_1": 1.0,
+          "recall_at_3": 1.0
+        }
+      },
+      "batch_query_ms_per_item": 21.77621666669438,
+      "total_seconds": 8.792021100001875,
+      "queries": [
+        {
+          "split": "validation",
+          "language": "kk",
+          "q": "Қазақ ақынының өмірі мен қоғам туралы тарихи роман",
+          "title": "Абай жолы",
+          "rank": 1,
+          "first": "Абай жолы"
+        },
+        {
+          "split": "validation",
+          "language": "ru",
+          "q": "Исторический роман о казахском поэте и переменах в обществе",
+          "title": "Абай жолы",
+          "rank": 1,
+          "first": "Абай жолы"
+        },
+        {
+          "split": "validation",
+          "language": "en",
+          "q": "A historical novel about a Kazakh poet and society",
+          "title": "Абай жолы",
+          "rank": 1,
+          "first": "Абай жолы"
+        },
+        {
+          "split": "validation",
+          "language": "kk",
+          "q": "Бағдарлама кодын түсінікті етіп жазу және тестілеу",
+          "title": "Clean Code",
+          "rank": 1,
+          "first": "Clean Code"
+        },
+        {
+          "split": "validation",
+          "language": "ru",
+          "q": "Как писать понятные маленькие функции и поддерживать программы",
+          "title": "Clean Code",
+          "rank": 1,
+          "first": "Clean Code"
+        },
+        {
+          "split": "validation",
+          "language": "en",
+          "q": "How to write readable small functions and maintain software",
+          "title": "Clean Code",
+          "rank": 1,
+          "first": "Clean Code"
+        },
+        {
+          "split": "validation",
+          "language": "kk",
+          "q": "Python бағдарламалауды нөлден жобалар арқылы үйрену",
+          "title": "Python Crash Course",
+          "rank": 2,
+          "first": "Deep Learning with Python"
+        },
+        {
+          "split": "validation",
+          "language": "ru",
+          "q": "Начать программировать на Python с практических проектов",
+          "title": "Python Crash Course",
+          "rank": 1,
+          "first": "Python Crash Course"
+        },
+        {
+          "split": "validation",
+          "language": "en",
+          "q": "Beginner introduction to Python syntax with practical projects",
+          "title": "Python Crash Course",
+          "rank": 1,
+          "first": "Python Crash Course"
+        },
+        {
+          "split": "validation",
+          "language": "kk",
+          "q": "Адамгершілік пен еңбек және білім туралы ойлар",
+          "title": "Қара сөздер",
+          "rank": 1,
+          "first": "Қара сөздер"
+        },
+        {
+          "split": "validation",
+          "language": "ru",
+          "q": "Размышления о нравственности, труде и образовании",
+          "title": "Қара сөздер",
+          "rank": 1,
+          "first": "Қара сөздер"
+        },
+        {
+          "split": "validation",
+          "language": "en",
+          "q": "Reflections on morality, education and honest work",
+          "title": "Қара сөздер",
+          "rank": 1,
+          "first": "Қара сөздер"
+        },
+        {
+          "split": "validation",
+          "language": "kk",
+          "q": "Күнделікті шағын әрекеттермен жақсы әдет қалыптастыру",
+          "title": "Atomic Habits",
+          "rank": 1,
+          "first": "Atomic Habits"
+        },
+        {
+          "split": "validation",
+          "language": "ru",
+          "q": "Как маленькие ежедневные действия помогают менять привычки",
+          "title": "Atomic Habits",
+          "rank": 1,
+          "first": "Atomic Habits"
+        },
+        {
+          "split": "validation",
+          "language": "en",
+          "q": "Build better habits through tiny repeated everyday actions",
+          "title": "Atomic Habits",
+          "rank": 1,
+          "first": "Atomic Habits"
+        },
+        {
+          "split": "validation",
+          "language": "kk",
+          "q": "Ғарыш, уақыт және қара құрдымдар туралы түсінікті кітап",
+          "title": "A Brief History of Time",
+          "rank": 1,
+          "first": "A Brief History of Time"
+        },
+        {
+          "split": "validation",
+          "language": "ru",
+          "q": "Доступное объяснение космоса, времени и черных дыр",
+          "title": "A Brief History of Time",
+          "rank": 1,
+          "first": "A Brief History of Time"
+        },
+        {
+          "split": "validation",
+          "language": "en",
+          "q": "An accessible explanation of cosmology and black holes",
+          "title": "A Brief History of Time",
+          "rank": 1,
+          "first": "A Brief History of Time"
+        },
+        {
+          "split": "test",
+          "language": "kk",
+          "q": "Нейрондық желілерді Python арқылы жаттықтыруды үйренгім келеді",
+          "title": "Deep Learning with Python",
+          "rank": 1,
+          "first": "Deep Learning with Python"
+        },
+        {
+          "split": "test",
+          "language": "ru",
+          "q": "Практическое обучение нейронных сетей на Python",
+          "title": "Deep Learning with Python",
+          "rank": 1,
+          "first": "Deep Learning with Python"
+        },
+        {
+          "split": "test",
+          "language": "en",
+          "q": "Practical training of neural networks in Python",
+          "title": "Deep Learning with Python",
+          "rank": 1,
+          "first": "Deep Learning with Python"
+        },
+        {
+          "split": "test",
+          "language": "kk",
+          "q": "Он тоғызыншы ғасырдағы Ресей отбасылары мен соғыс туралы роман",
+          "title": "Война и мир",
+          "rank": 1,
+          "first": "Война и мир"
+        },
+        {
+          "split": "test",
+          "language": "ru",
+          "q": "Роман о судьбах семей во время войны в России XIX века",
+          "title": "Война и мир",
+          "rank": 1,
+          "first": "Война и мир"
+        },
+        {
+          "split": "test",
+          "language": "en",
+          "q": "A novel about Russian families during nineteenth century war",
+          "title": "Война и мир",
+          "rank": 1,
+          "first": "Война и мир"
+        },
+        {
+          "split": "test",
+          "language": "kk",
+          "q": "Қылмыс жасаған адамның ар-ұжданы мен жауапкершілігі туралы шығарма",
+          "title": "Преступление и наказание",
+          "rank": 1,
+          "first": "Преступление и наказание"
+        },
+        {
+          "split": "test",
+          "language": "ru",
+          "q": "Нравственный выбор и ответственность человека после преступления",
+          "title": "Преступление и наказание",
+          "rank": 1,
+          "first": "Преступление и наказание"
+        },
+        {
+          "split": "test",
+          "language": "en",
+          "q": "A novel exploring conscience and responsibility after committing a crime",
+          "title": "Преступление и наказание",
+          "rank": 1,
+          "first": "Преступление и наказание"
+        },
+        {
+          "split": "test",
+          "language": "kk",
+          "q": "Кәсіп ашқанда тұтынушы пікірін пайдаланып идеяны тексеру",
+          "title": "The Lean Startup",
+          "rank": 1,
+          "first": "The Lean Startup"
+        },
+        {
+          "split": "test",
+          "language": "ru",
+          "q": "Проверка бизнес-гипотез через обратную связь покупателей",
+          "title": "The Lean Startup",
+          "rank": 1,
+          "first": "The Lean Startup"
+        },
+        {
+          "split": "test",
+          "language": "en",
+          "q": "Test business assumptions using customer feedback and iteration",
+          "title": "The Lean Startup",
+          "rank": 1,
+          "first": "The Lean Startup"
+        },
+        {
+          "split": "test",
+          "language": "kk",
+          "q": "Әділетті қоғам мен мемлекеттің құрылымы туралы философия",
+          "title": "The Republic",
+          "rank": 1,
+          "first": "The Republic"
+        },
+        {
+          "split": "test",
+          "language": "ru",
+          "q": "Философский диалог о справедливости и устройстве общества",
+          "title": "The Republic",
+          "rank": 1,
+          "first": "The Republic"
+        },
+        {
+          "split": "test",
+          "language": "en",
+          "q": "A philosophical discussion of justice and the ideal society",
+          "title": "The Republic",
+          "rank": 1,
+          "first": "The Republic"
+        },
+        {
+          "split": "test",
+          "language": "kk",
+          "q": "Apple негізін қалаушының өмірі мен басқаруы туралы өмірбаян",
+          "title": "Steve Jobs",
+          "rank": 1,
+          "first": "Steve Jobs"
+        },
+        {
+          "split": "test",
+          "language": "ru",
+          "q": "Биография основателя Apple и его подход к руководству",
+          "title": "Steve Jobs",
+          "rank": 1,
+          "first": "Steve Jobs"
+        },
+        {
+          "split": "test",
+          "language": "en",
+          "q": "Biography of the Apple founder and his approach to management",
+          "title": "Steve Jobs",
+          "rank": 1,
+          "first": "Steve Jobs"
+        }
+      ]
+    }
+  ],
+  "limitation": "36 authored queries over 12 curated seed titles. Descriptions inform queries. Not an independent real-user benchmark or evidence of broad language quality."
+}

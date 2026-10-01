@@ -1,0 +1,53 @@
+# Use with the base file, never the development override. Requires Compose 2.24.4+.
+x-production-environment: &production-environment
+  APP_ENV: production
+  FRONTEND_URL: ${PUBLIC_ORIGIN:?Configure an HTTPS origin}
+  CORS_ORIGINS: '["${PUBLIC_ORIGIN:?Configure an HTTPS origin}"]'
+  ALLOWED_HOSTS: '["${PUBLIC_HOST:?Configure the certificate hostname}","backend","localhost","127.0.0.1"]'
+  LOG_LEVEL: INFO
+
+x-logging: &logging
+  driver: json-file
+  options: {max-size: 10m, max-file: '3'}
+
+services:
+  database:
+    environment:
+      <<: *production-environment
+      DEV_SEED_PASSWORD: ''
+  backend:
+    restart: unless-stopped
+    logging: *logging
+    environment: *production-environment
+  worker:
+    restart: unless-stopped
+    logging: *logging
+    environment: *production-environment
+  ml-worker:
+    restart: unless-stopped
+    logging: *logging
+    environment: *production-environment
+  beat:
+    restart: unless-stopped
+    logging: *logging
+    environment: *production-environment
+  frontend:
+    restart: unless-stopped
+    logging: *logging
+  postgres:
+    logging: *logging
+  redis:
+    logging: *logging
+  nginx:
+    restart: unless-stopped
+    logging: *logging
+    environment:
+      PUBLIC_HOST: ${PUBLIC_HOST:?Configure the certificate hostname}
+      PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:?Configure an HTTPS origin}
+      NGINX_ENVSUBST_FILTER: ^PUBLIC_
+    ports: !override
+      - '${DEPLOY_BIND_ADDRESS:-127.0.0.1}:${HTTP_PORT:-80}:80'
+      - '${DEPLOY_BIND_ADDRESS:-127.0.0.1}:${HTTPS_PORT:-443}:443'
+    volumes: !override
+      - ./infra/nginx/production.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ${TLS_DIRECTORY:?Configure certificate directory}:/etc/nginx/tls:ro

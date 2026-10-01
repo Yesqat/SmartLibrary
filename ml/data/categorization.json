@@ -1,0 +1,178 @@
+{
+  "categories": {
+    "Programming": "Software design, programming languages and practical development.",
+    "Artificial Intelligence": "Intelligent systems, reasoning and AI applications.",
+    "Machine Learning": "Learning from data, supervised learning and statistical models.",
+    "History": "People, societies and historical change, including Kazakhstan.",
+    "Fiction": "Novels and stories exploring human experience.",
+    "Psychology": "Human behavior, decisions, learning and habits.",
+    "Business": "Entrepreneurship, organizations and management.",
+    "Science": "Scientific methods, discoveries and explanations of nature.",
+    "Philosophy": "Ethics, knowledge and reflection on life.",
+    "Biography": "The lives and experiences of notable people."
+  },
+  "samples": [
+    {
+      "id": "seed-1",
+      "title": "Абай жолы",
+      "authors": [
+        "Мұхтар Әуезов"
+      ],
+      "language": "kk",
+      "year": 1942,
+      "labels": [
+        "Fiction",
+        "History"
+      ],
+      "description": "Абайдың өмірі мен қазақ қоғамының өзгерістерін суреттейтін тарихи роман."
+    },
+    {
+      "id": "seed-2",
+      "title": "Clean Code",
+      "authors": [
+        "Robert C. Martin"
+      ],
+      "language": "en",
+      "year": 2008,
+      "labels": [
+        "Programming"
+      ],
+      "description": "Practical discussion of readable code, small functions, testing and software maintenance."
+    },
+    {
+      "id": "seed-3",
+      "title": "Python Crash Course",
+      "authors": [
+        "Eric Matthes"
+      ],
+      "language": "en",
+      "year": 2015,
+      "labels": [
+        "Programming"
+      ],
+      "description": "An introduction to Python syntax and programming through practical projects."
+    },
+    {
+      "id": "seed-4",
+      "title": "Deep Learning with Python",
+      "authors": [
+        "François Chollet"
+      ],
+      "language": "en",
+      "year": 2017,
+      "labels": [
+        "Artificial Intelligence",
+        "Machine Learning",
+        "Programming"
+      ],
+      "description": "Introduces neural networks, model training and practical deep learning with Python."
+    },
+    {
+      "id": "seed-5",
+      "title": "Қара сөздер",
+      "authors": [
+        "Абай Құнанбайұлы"
+      ],
+      "language": "kk",
+      "year": null,
+      "labels": [
+        "Philosophy"
+      ],
+      "description": "Білім, еңбек, мінез және адамгершілік туралы ойлар жинағы."
+    },
+    {
+      "id": "seed-6",
+      "title": "Война и мир",
+      "authors": [
+        "Лев Толстой"
+      ],
+      "language": "ru",
+      "year": 1869,
+      "labels": [
+        "Fiction",
+        "History"
+      ],
+      "description": "Роман о семьях, войне и общественных переменах в России начала XIX века."
+    },
+    {
+      "id": "seed-7",
+      "title": "Преступление и наказание",
+      "authors": [
+        "Фёдор Достоевский"
+      ],
+      "language": "ru",
+      "year": 1866,
+      "labels": [
+        "Fiction",
+        "Psychology"
+      ],
+      "description": "Роман об ответственности, нравственном выборе и последствиях преступления."
+    },
+    {
+      "id": "seed-8",
+      "title": "Atomic Habits",
+      "authors": [
+        "James Clear"
+      ],
+      "language": "en",
+      "year": 2018,
+      "labels": [
+        "Psychology"
+      ],
+      "description": "Explores how small repeated actions and the surrounding environment influence habits."
+    },
+    {
+      "id": "seed-9",
+      "title": "The Lean Startup",
+      "authors": [
+        "Eric Ries"
+      ],
+      "language": "en",
+      "year": 2011,
+      "labels": [
+        "Business"
+      ],
+      "description": "Discusses testing business assumptions, customer feedback and iterative product development."
+    },
+    {
+      "id": "seed-10",
+      "title": "A Brief History of Time",
+      "authors": [
+        "Stephen Hawking"
+      ],
+      "language": "en",
+      "year": 1988,
+      "labels": [
+        "Science"
+      ],
+      "description": "An accessible introduction to cosmology, space, time and black holes."
+    },
+    {
+      "id": "seed-11",
+      "title": "The Republic",
+      "authors": [
+        "Plato"
+      ],
+      "language": "en",
+      "year": null,
+      "labels": [
+        "Philosophy"
+      ],
+      "description": "A philosophical dialogue about justice, education and the organization of society."
+    },
+    {
+      "id": "seed-12",
+      "title": "Steve Jobs",
+      "authors": [
+        "Walter Isaacson"
+      ],
+      "language": "en",
+      "year": 2011,
+      "labels": [
+        "Biography",
+        "Business"
+      ],
+      "description": "A biography examining the life, creative work and management of Steve Jobs."
+    }
+  ]
+}

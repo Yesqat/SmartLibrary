@@ -1,0 +1,8 @@
+.next
+node_modules
+package-lock.json
+types/api.generated.ts
+next-env.d.ts
+playwright-report
+test-results
+test-results-production

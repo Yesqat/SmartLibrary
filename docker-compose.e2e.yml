@@ -1,0 +1,21 @@
+# Use only with project smartlibrary-e2e and the dev override. Separate DB/Redis/uploads.
+services:
+  backend:
+    environment:
+      APP_ENV: test
+      AUTH_RATE_NAMESPACE: smartlibrary:e2e
+    volumes:
+      - models:/app/var/models:ro
+  worker:
+    volumes:
+      - models:/app/var/models:ro
+  ml-worker:
+    volumes:
+      - models:/app/var/models:ro
+  beat:
+    volumes:
+      - models:/app/var/models:ro
+volumes:
+  models:
+    external: true
+    name: smartlibrary_models

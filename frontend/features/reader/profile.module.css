@@ -1,0 +1,737 @@
+.profile {
+  min-height: 100svh;
+  overflow: clip;
+  background: linear-gradient(125deg, #f4f8f1, #edf5ef 62%, #faf9f4);
+  color: #173d37;
+}
+
+.profile > main {
+  max-width: none;
+  padding: 0;
+}
+
+.profile > main > nav {
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 18px;
+  min-height: 64px;
+  margin: 0;
+  padding: 0 max(24px, calc((100% - 1104px) / 2));
+  border-bottom: 1px solid #e4eee7;
+  background: #fffefa;
+  color: #264b43;
+  font-size: 12px;
+}
+
+.profile > main > nav > a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 60px;
+  border-bottom: 2px solid transparent;
+}
+
+.profile > main > nav > a:first-child {
+  color: #0f4f46;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+}
+
+.profile > main > nav > a:hover,
+.profile > main > nav > a[href="/account/profile"] {
+  border-bottom-color: #5f998a;
+  color: #0f4f46;
+}
+
+/* CatalogShell retains the page's accessible h1 and all role-specific links. */
+.profile > main > h1 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(115deg, #eaf4ed, #f5f8f0 47%, #e6f1e9);
+}
+
+.hero::before {
+  position: absolute;
+  z-index: -1;
+  top: 56px;
+  left: -170px;
+  width: 235px;
+  height: 280px;
+  border-radius: 50%;
+  background: #cfe6dc;
+  content: "";
+}
+
+.heroInner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.25fr);
+  align-items: center;
+  gap: 36px;
+  max-width: 1104px;
+  min-height: 300px;
+  margin-inline: auto;
+  padding: 38px 20px 30px 46px;
+}
+
+.intro {
+  position: relative;
+  z-index: 1;
+}
+
+.eyebrow {
+  margin-bottom: 10px;
+  color: #196b5a;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+}
+
+.title {
+  color: #103c35;
+  font-size: clamp(34px, 3.6vw, 46px);
+  font-weight: 750;
+  line-height: 1.15;
+  letter-spacing: -1.2px;
+}
+
+.description {
+  max-width: 425px;
+  margin-top: 12px;
+  color: #355d53;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.quote {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-top: 20px;
+  padding: 14px 18px;
+  border-radius: 16px;
+  background: #dcece4c7;
+  color: #376b5e;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.quote svg {
+  flex-shrink: 0;
+  width: 25px;
+  height: 25px;
+  fill: #72a498;
+  stroke-width: 0;
+  transform: rotate(180deg);
+}
+
+.quote cite {
+  display: block;
+  margin-top: 2px;
+  color: #557e72;
+  font-size: 12px;
+  font-style: normal;
+}
+
+.artwork {
+  position: relative;
+  align-self: stretch;
+  min-height: 235px;
+}
+
+.artwork::before,
+.artwork::after {
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  content: "";
+}
+
+.artwork::before {
+  inset: -10px 118px -15px 0;
+  background: #d0eae0;
+  transform: rotate(-18deg);
+}
+
+.artwork::after {
+  inset: -35px -125px 0 205px;
+  background: #c3e1d5a6;
+  transform: rotate(-20deg);
+}
+
+.artwork > img {
+  position: absolute;
+  right: 110px;
+  bottom: -23px;
+  width: 410px;
+  max-width: none;
+  height: auto;
+  object-fit: contain;
+}
+
+.motto {
+  position: absolute;
+  top: 18px;
+  right: -10px;
+  width: 130px;
+  padding: 22px 20px;
+  border: 1px solid #e7f3eb;
+  border-radius: 16px;
+  background: #f5faf2bf;
+  color: #0f5547;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.motto svg {
+  width: 29px;
+  height: 29px;
+  margin-bottom: 18px;
+}
+
+.motto span,
+.accentLine {
+  display: block;
+  width: 30px;
+  height: 2px;
+  margin-top: 18px;
+  background: #3e7c6a;
+}
+
+.content {
+  max-width: 1152px;
+  margin-inline: auto;
+  padding: 0 24px 44px;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 2.3fr) minmax(280px, 1fr);
+  align-items: start;
+  gap: 16px;
+}
+
+.mainColumn,
+.sidebar {
+  display: grid;
+  min-width: 0;
+  gap: 18px;
+}
+
+.card,
+.sidebarCard,
+.supportCard {
+  min-width: 0;
+  border: 1px solid #dfebe1;
+  border-radius: 17px;
+  background: #ffffffed;
+  box-shadow: 0 6px 24px #2b655007;
+}
+
+.card {
+  padding: 20px 28px 24px;
+}
+
+.cardHeading {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.cardHeading h2 {
+  color: #153f36;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.cardHeading p,
+.hint {
+  margin-top: 4px;
+  color: #526e64;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.badge,
+.smallBadge {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: linear-gradient(130deg, #e1f2e9, #f1f8f3);
+  color: #0f6150;
+}
+
+.badge svg {
+  width: 30px;
+  height: 30px;
+  stroke-width: 1.7;
+}
+
+.photoBody {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  padding-left: 34px;
+}
+
+.avatar {
+  position: relative;
+  flex-shrink: 0;
+  width: 116px;
+  height: 116px;
+}
+
+.avatarImage,
+.initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border: 4px solid #f4f8f1;
+  border-radius: 50%;
+  background: #dcefe3;
+  color: #246450;
+  object-fit: cover;
+  font-size: 32px;
+  font-weight: 600;
+}
+
+.camera {
+  position: absolute;
+  right: -2px;
+  bottom: 4px;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 3px solid white;
+  border-radius: 50%;
+  background: #e5f4e9;
+  color: #1b6956;
+}
+
+.camera svg {
+  width: 18px;
+  height: 18px;
+}
+
+.photoControls {
+  min-width: 0;
+  flex: 1;
+}
+
+.photoForm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.photoForm input {
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 4px;
+  color: #536e62;
+  font-size: 12px;
+}
+
+.photoForm input::file-selector-button {
+  margin-right: 10px;
+  padding: 7px 10px;
+  border: 1px solid #d9e6dd;
+  border-radius: 7px;
+  background: #f2f7f3;
+  color: #315748;
+  cursor: pointer;
+}
+
+.profile .primary,
+.profile .secondary,
+.securityLink {
+  min-height: 42px;
+  padding: 10px 18px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  transition:
+    background-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.profile .primary {
+  border: 1px solid #246756;
+  background: #205f4e;
+  color: white;
+  box-shadow: 0 2px 5px #18533d0d;
+}
+
+.profile .primary:hover {
+  background: #134f40;
+}
+
+.profile .secondary {
+  border: 1px solid #ceded3;
+  background: #fbfcf9;
+  color: #225345;
+}
+
+.profile .secondary:hover,
+.securityLink:hover {
+  background: #e7f1e9;
+}
+
+.form,
+.preferences {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  min-width: 0;
+}
+
+.fields > label:last-of-type,
+.fields > button {
+  grid-column: 1 / -1;
+}
+
+.inputWrap {
+  position: relative;
+  display: block;
+}
+
+.inputWrap svg {
+  position: absolute;
+  top: 50%;
+  left: 13px;
+  width: 19px;
+  height: 19px;
+  color: #286a57;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.inputWrap input,
+.preferences input {
+  min-height: 44px;
+  border: 1px solid #ceddd3;
+  border-radius: 7px;
+  background: #fff;
+  color: #264d41;
+  font-size: 14px;
+}
+
+.inputWrap input {
+  padding-left: 43px;
+}
+
+.profile input:focus-visible,
+.profile button:focus-visible,
+.profile a:focus-visible {
+  outline: 2px solid #4d907b;
+  outline-offset: 3px;
+}
+
+.preferences > .hint {
+  margin: -12px 0 0 80px;
+}
+
+.preferences > fieldset {
+  min-width: 0;
+  padding: 12px;
+  border-color: #d3e1d8;
+  background: #fff;
+}
+
+.preferences > fieldset > div:first-of-type {
+  display: inline-flex;
+  max-width: 100%;
+  margin: 0 12px 0 0;
+  vertical-align: middle;
+}
+
+.preferences > fieldset button {
+  max-width: 100%;
+  height: auto;
+  min-height: 38px;
+  border-color: #d5e3d9;
+  color: #2d594b;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.preferences > fieldset > div:first-of-type > button {
+  background: #f2f6f1;
+}
+
+.preferences > button {
+  justify-self: start;
+}
+
+.sidebarCard {
+  display: grid;
+  gap: 16px;
+  padding: 16px;
+}
+
+.infoCard {
+  padding: 16px;
+  border-radius: 14px;
+  background: linear-gradient(130deg, #f0f7f1, #f2f8f4);
+}
+
+.infoHeading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.smallBadge {
+  width: 48px;
+  height: 48px;
+  background: #deefe6;
+}
+
+.smallBadge svg {
+  width: 25px;
+  height: 25px;
+  stroke-width: 1.7;
+}
+
+.infoHeading h2 {
+  color: #174c3d;
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.email {
+  min-width: 0;
+  color: #204a3c;
+  font-size: 13px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.infoCard > p,
+.supportCard > p {
+  color: #4f6c61;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.securityLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+  border: 1px solid #377c65;
+  color: #225743;
+  text-align: center;
+}
+
+.securityLink svg {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+}
+
+.supportCard {
+  padding: 20px 28px 24px;
+  background: #fffaf0;
+}
+
+.supportCard .smallBadge {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  background: #fff2cf;
+}
+
+@media (min-width: 1450px) {
+  .profile > main > nav {
+    padding-inline: max(24px, calc((100% - 1260px) / 2));
+  }
+
+  .heroInner {
+    max-width: 1260px;
+    min-height: 330px;
+  }
+
+  .content {
+    max-width: 1308px;
+  }
+
+  .artwork > img {
+    right: 140px;
+    width: 460px;
+  }
+}
+
+@media (max-width: 1099px) {
+  .profile > main > nav {
+    justify-content: flex-start;
+    gap: 0 20px;
+    padding-block: 8px;
+  }
+
+  .profile > main > nav > a {
+    min-height: 40px;
+  }
+
+  .heroInner {
+    gap: 20px;
+    padding-left: 32px;
+  }
+
+  .motto {
+    display: none;
+  }
+
+  .artwork > img {
+    right: -10px;
+    width: min(45vw, 420px);
+  }
+
+  .columns {
+    grid-template-columns: minmax(0, 1fr) 280px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  .photoBody {
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-left: 0;
+  }
+
+  .photoControls {
+    flex-basis: 230px;
+  }
+
+  .sidebarCard {
+    padding: 12px;
+  }
+
+  .infoCard {
+    padding: 14px;
+  }
+}
+
+@media (max-width: 899px) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sidebar {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+@media (max-width: 767px) {
+  .profile > main > nav {
+    padding-inline: 20px;
+    column-gap: 16px;
+  }
+
+  .profile > main > nav > a:first-child {
+    flex-basis: 100%;
+  }
+
+  .heroInner {
+    display: block;
+    min-height: 0;
+    padding: 28px 24px;
+  }
+
+  .artwork {
+    display: none;
+  }
+
+  .description,
+  .quote {
+    max-width: 500px;
+  }
+
+  .content {
+    padding: 0 16px 28px;
+  }
+
+  .sidebar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 479px) {
+  .card {
+    padding: 20px 16px;
+  }
+
+  .cardHeading {
+    gap: 12px;
+  }
+
+  .badge {
+    width: 48px;
+    height: 48px;
+  }
+
+  .badge svg {
+    width: 25px;
+    height: 25px;
+  }
+
+  .cardHeading h2 {
+    font-size: 18px;
+  }
+
+  .photoBody {
+    justify-content: center;
+  }
+
+  .photoForm > button {
+    width: 100%;
+  }
+
+  .fields {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+
+  .preferences > .hint {
+    margin-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profile .primary,
+  .profile .secondary,
+  .securityLink {
+    transition: none;
+  }
+}

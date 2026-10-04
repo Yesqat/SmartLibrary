@@ -1,12 +1,31 @@
 "use client";
 import { useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { BookOpen, Bot, LoaderCircle, Send, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Failure, Pager, inputClass } from "@/features/catalog/shared";
 import { ApiError } from "@/services/api-client";
 import { assistant as t } from "@/locales/assistant";
 import { assistantApi } from "./api";
 import { MessageView } from "./messages";
+import styles from "./assistant.module.css";
+
+export function ChatEmptyState() {
+  return (
+    <div className={styles.emptyState}>
+      <div className={styles.emptyIcon} aria-hidden="true">
+        <BookOpen />
+        <Sparkles />
+      </div>
+      <h3>Сұрағыңызды жазыңыз</h3>
+      <p>
+        Кітаптар, авторлар, жанрлар немесе кітапхана жайлы сұраңыз.
+        <br />
+        Мен көмектесуге дайынмын!
+      </p>
+    </div>
+  );
+}
 export function Chat({ id }: { id: string }) {
   const [content, setContent] = useState("");
   const [page, setPage] = useState(1);
@@ -41,21 +60,37 @@ export function Chat({ id }: { id: string }) {
     },
   });
   return (
-    <section aria-label={t.title} className="min-w-0 space-y-5">
-      <p className="text-sm text-muted-foreground">{t.snapshot}</p>
+    <section aria-label={t.title} className={styles.chatPanel}>
       {detail.isPending ? (
-        <p role="status">{t.loading}</p>
+        <p role="status" className={styles.loading}>
+          {t.loading}
+        </p>
       ) : detail.isError ? (
         <Failure error={detail.error} retry={() => void detail.refetch()} />
       ) : (
         <>
-          <h2 className="text-xl font-semibold">
-            {detail.data.conversation.title || t.untitled}
-          </h2>
-          {!detail.data.messages.total && <p>{t.empty}</p>}
-          <div className="space-y-4">
+          <header className={styles.chatHeading}>
+            <span className={styles.botBadge}>
+              <Bot aria-hidden="true" />
+            </span>
+            <div>
+              <p>{t.empty}</p>
+              <h2>{detail.data.conversation.title || t.untitled}</h2>
+            </div>
+          </header>
+          {!detail.data.messages.total && <ChatEmptyState />}
+          <div className={styles.messageList}>
             {detail.data.messages.items.map((message) => (
-              <MessageView key={message.id} message={message} />
+              <div
+                key={message.id}
+                className={
+                  message.role === "USER"
+                    ? styles.userMessage
+                    : styles.assistantMessage
+                }
+              >
+                <MessageView message={message} />
+              </div>
             ))}
           </div>
           {detail.data.messages.pages > 1 && (
@@ -68,49 +103,62 @@ export function Chat({ id }: { id: string }) {
         </>
       )}
       {send.isPending && (
-        <p role="status" aria-live="polite">
+        <p role="status" aria-live="polite" className={styles.processing}>
+          <LoaderCircle aria-hidden="true" />
           {t.processing}
         </p>
       )}
       {send.isError && <Failure error={send.error} />}
-      <div className="flex flex-wrap gap-2">
-        {t.starters.map((starter) => (
-          <Button
-            key={starter}
-            variant="outline"
-            disabled={send.isPending}
-            onClick={() => setContent(starter)}
-          >
-            {starter}
-          </Button>
-        ))}
-      </div>
-      <form
-        className="space-y-3"
-        onSubmit={(event) => {
-          event.preventDefault();
-          if (content.trim() && !send.isPending) send.mutate();
-        }}
-      >
-        <label className="grid gap-2 font-medium">
-          {t.input}
-          <textarea
-            className={inputClass}
-            rows={3}
-            maxLength={2000}
-            required
-            value={content}
-            disabled={send.isPending}
-            onChange={(event) => setContent(event.target.value)}
-          />
-        </label>
-        <Button
-          type="submit"
-          disabled={!content.trim() || send.isPending || detail.isError}
+      <div className={styles.composer}>
+        <p className={styles.snapshot}>{t.snapshot}</p>
+        <div className={styles.starters}>
+          {t.starters.map((starter) => (
+            <Button
+              key={starter}
+              variant="outline"
+              disabled={send.isPending}
+              onClick={() => setContent(starter)}
+            >
+              {starter}
+            </Button>
+          ))}
+        </div>
+        <form
+          className={styles.sendForm}
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (content.trim() && !send.isPending) send.mutate();
+          }}
         >
-          {send.isPending ? t.processing : t.send}
-        </Button>
-      </form>
+          <label className={styles.inputLabel}>
+            {t.input}
+            <textarea
+              className={inputClass}
+              placeholder="Сұрағыңызды жазыңыз..."
+              rows={3}
+              maxLength={2000}
+              required
+              value={content}
+              disabled={send.isPending}
+              onChange={(event) => setContent(event.target.value)}
+            />
+          </label>
+          <Button
+            className={styles.sendButton}
+            type="submit"
+            disabled={!content.trim() || send.isPending || detail.isError}
+          >
+            {send.isPending ? (
+              <LoaderCircle aria-hidden="true" />
+            ) : (
+              <Send aria-hidden="true" />
+            )}
+            <span className="sr-only">
+              {send.isPending ? t.processing : t.send}
+            </span>
+          </Button>
+        </form>
+      </div>
     </section>
   );
 }

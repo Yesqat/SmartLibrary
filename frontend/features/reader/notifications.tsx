@@ -1,11 +1,77 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  Bell,
+  BookOpen,
+  CalendarClock,
+  CalendarX2,
+  Check,
+  CheckCheck,
+  Clock,
+  ClockAlert,
+  Inbox,
+  Sprout,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CatalogShell, Failure, Pager } from "@/features/catalog/shared";
 import { reader as t } from "@/locales/reader";
-import { notificationLink, readerApi, readerDate } from "./api";
+import {
+  notificationLink,
+  readerApi,
+  readerDate,
+  type Notification,
+} from "./api";
+import notificationBooks from "./assets/notification-books.png";
+import styles from "./notifications.module.css";
+
+function NotificationsHero() {
+  return (
+    <div className={styles.hero}>
+      <div className={styles.heroInner}>
+        <div className={styles.intro}>
+          <p className={styles.eyebrow}>ХАБАРЛАМАЛАР</p>
+          <p className={styles.title} aria-hidden="true">
+            {t.notifications}
+          </p>
+          <p className={styles.description}>
+            Кітапханаңыздағы маңызды жаңалықтар мен ескертулерді осы жерден
+            қараңыз.
+          </p>
+        </div>
+        <div className={styles.artwork} aria-hidden="true">
+          <Image
+            src={notificationBooks}
+            alt=""
+            width={1536}
+            height={1024}
+            sizes="(max-width: 767px) 1px, (max-width: 1199px) 40vw, 400px"
+            loading="eager"
+          />
+          <div className={styles.motto}>
+            <Sprout />
+            <p>Уақытылы ақпарат — үлкен мүмкіндік!</p>
+            <span />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function NotificationIcon({ type }: { type: Notification["type"] }) {
+  const Icon =
+    {
+      RESERVATION_READY: BookOpen,
+      RESERVATION_EXPIRING: CalendarClock,
+      RESERVATION_EXPIRED: CalendarX2,
+      DUE_SOON: BookOpen,
+      OVERDUE: ClockAlert,
+    }[type] ?? Bell;
+  return <Icon aria-hidden="true" />;
+}
 export function Notifications() {
   const [page, setPage] = useState(1),
     [unread, setUnread] = useState(false);
@@ -28,70 +94,137 @@ export function Notifications() {
     },
   });
   return (
-    <CatalogShell title={t.notifications}>
-      <div className="mb-6 flex flex-wrap items-center gap-5">
-        <label className="flex gap-2">
-          <input
-            type="checkbox"
-            checked={unread}
-            onChange={(e) => {
-              setUnread(e.target.checked);
-              setPage(1);
-            }}
-          />
-          {t.unread}
-        </label>
-        <Button
-          variant="outline"
-          disabled={mutation.isPending || !result.data?.total}
-          onClick={() => mutation.mutate(null)}
-        >
-          {t.readAll}
-        </Button>
-      </div>
-      {mutation.isError && <Failure error={mutation.error} />}
-      {mutation.isSuccess && <p role="status">{t.readDone}</p>}
-      {result.isPending ? (
-        <p role="status">{t.loading}</p>
-      ) : result.isError ? (
-        <Failure error={result.error} retry={() => void result.refetch()} />
-      ) : (
-        <>
-          {!result.data.total && <p>{t.empty}</p>}
-          <ul className="space-y-4">
-            {result.data.items.map((row) => (
-              <li
-                key={row.id}
-                className={`rounded-xl border p-5 ${row.is_read ? "bg-white" : "border-primary/40 bg-emerald-50"}`}
+    <div className={styles.notifications}>
+      <CatalogShell title={t.notifications}>
+        <NotificationsHero />
+        <div className={styles.workspace}>
+          <aside className={styles.sidebar} aria-label="Хабарлама сүзгісі">
+            <h2 className={styles.filterHeading}>
+              <Bell aria-hidden="true" />
+              <span>{unread ? t.unread : "Барлық хабарламалар"}</span>
+              {result.data && (
+                <span
+                  className={styles.count}
+                  aria-label={
+                    unread ? "Оқылмаған хабарламалар саны" : "Хабарламалар саны"
+                  }
+                >
+                  {result.data.total}
+                </span>
+              )}
+            </h2>
+            <label className={styles.unreadFilter}>
+              <input
+                type="checkbox"
+                checked={unread}
+                onChange={(e) => {
+                  setUnread(e.target.checked);
+                  setPage(1);
+                }}
+              />
+              <span>{t.unread}</span>
+            </label>
+            <div className={styles.bulkAction}>
+              <Button
+                variant="outline"
+                className={styles.readAll}
+                disabled={mutation.isPending || !result.data?.total}
+                onClick={() => mutation.mutate(null)}
               >
-                <h2 className="text-lg font-semibold">{row.title}</h2>
-                <p className="my-2">{row.message}</p>
-                <time className="text-sm" dateTime={row.created_at}>
-                  {readerDate(row.created_at)}
-                </time>
-                <div className="mt-4 flex gap-4">
-                  <Link
-                    className="text-primary underline"
-                    href={notificationLink(row)}
-                  >
-                    {t.open}
-                  </Link>
-                  {!row.is_read && (
-                    <Button
-                      variant="outline"
-                      disabled={mutation.isPending}
-                      onClick={() => mutation.mutate(row.id)}
+                <CheckCheck aria-hidden="true" />
+                {t.readAll}
+              </Button>
+            </div>
+            <div className={styles.helper}>
+              <Sprout aria-hidden="true" />
+              <p>
+                Хабарламаларды уақытында қадағалап, кітапхана мүмкіндіктерін
+                толық пайдаланыңыз!
+              </p>
+            </div>
+          </aside>
+          <section className={styles.feed} aria-label={t.notifications}>
+            {mutation.isError && <Failure error={mutation.error} />}
+            {mutation.isSuccess && (
+              <p role="status" className={styles.success}>
+                <Check aria-hidden="true" />
+                {t.readDone}
+              </p>
+            )}
+            {result.isPending ? (
+              <p role="status" className={styles.loading}>
+                {t.loading}
+              </p>
+            ) : result.isError ? (
+              <Failure
+                error={result.error}
+                retry={() => void result.refetch()}
+              />
+            ) : (
+              <>
+                {!result.data.total && (
+                  <div className={styles.empty}>
+                    <Inbox aria-hidden="true" />
+                    <p>{t.empty}</p>
+                  </div>
+                )}
+                <ul className={styles.list}>
+                  {result.data.items.map((row) => (
+                    <li
+                      key={row.id}
+                      className={`${styles.notification} ${row.is_read ? styles.readNotification : styles.unreadNotification}`}
                     >
-                      {t.read}
-                    </Button>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
-          <Pager page={page} pages={result.data.pages} onChange={setPage} />
-        </>
-      )}
-    </CatalogShell>
+                      <div className={styles.iconBadge}>
+                        <NotificationIcon type={row.type} />
+                        {!row.is_read && (
+                          <span
+                            className={styles.unreadDot}
+                            role="img"
+                            aria-label={t.unread}
+                          />
+                        )}
+                      </div>
+                      <div className={styles.message}>
+                        <h2>{row.title}</h2>
+                        <p>{row.message}</p>
+                        <div className={styles.timestamp}>
+                          <Clock aria-hidden="true" />
+                          <time dateTime={row.created_at}>
+                            {readerDate(row.created_at)}
+                          </time>
+                        </div>
+                      </div>
+                      <div className={styles.actions}>
+                        <Link
+                          className={styles.open}
+                          href={notificationLink(row)}
+                        >
+                          {t.open}
+                        </Link>
+                        {!row.is_read && (
+                          <Button
+                            variant="outline"
+                            className={styles.readAction}
+                            disabled={mutation.isPending}
+                            onClick={() => mutation.mutate(row.id)}
+                          >
+                            {t.read}
+                          </Button>
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                <Pager
+                  page={page}
+                  pages={result.data.pages}
+                  onChange={setPage}
+                />
+              </>
+            )}
+          </section>
+        </div>
+      </CatalogShell>
+    </div>
   );
 }

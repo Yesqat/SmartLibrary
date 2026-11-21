@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import { catalog as t } from "@/locales/catalog";
 import { searchText as s } from "@/locales/search";
 import { searchApi } from "./search-api";
 import { Failure, inputClass } from "./shared";
+import styles from "./catalog.module.css";
 export function SearchInput({
   value,
   onChange,
@@ -28,13 +30,14 @@ export function SearchInput({
   });
   return (
     <div
-      className="relative flex min-w-0 grow gap-2"
+      className={styles.search}
       onBlur={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget)) setFocused(false);
       }}
     >
-      <label className="min-w-0 grow">
+      <label className={styles.searchLabel}>
         <span className="sr-only">{s.placeholder}</span>
+        <Search aria-hidden="true" />
         <input
           type="search"
           className={inputClass}
@@ -47,7 +50,7 @@ export function SearchInput({
       </label>
       <Button type="submit">{t.find}</Button>
       {focused && debounced.length >= 2 && (
-        <div className="absolute top-full right-0 left-0 z-20 mt-2 rounded-lg border bg-white p-3 shadow-lg">
+        <div className={styles.suggestions}>
           {result.isPending ? (
             <p role="status">{t.loading}</p>
           ) : result.isError ? (

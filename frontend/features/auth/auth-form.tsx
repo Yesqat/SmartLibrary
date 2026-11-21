@@ -1,25 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
-import {
-  ArrowRight,
-  BookOpen,
-  LockKeyhole,
-  Mail,
-  Phone,
-  Sprout,
-  UserRound,
-} from "lucide-react";
+import { ReaderCard } from "@/features/reader/reader-card";
+import { Eye, EyeOff, LockKeyhole, Mail, Phone, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { BrandMark } from "@/components/ui/brand-mark";
 import { Button } from "@/components/ui/button";
 import { kk } from "@/locales/kk";
 import { ApiError, login, register } from "@/services/api-client";
 import { safeReturnTo } from "./navigation";
-import loginBooks from "./assets/login-books.png";
+import { LibrarianModel } from "@/components/assistant/librarian-model";
 import styles from "./login.module.css";
-import registerStyles from "./register.module.css";
 
 export const inputClass =
   "mt-2 block w-full rounded-xl border border-border bg-background px-4 py-3 outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-60";
@@ -35,6 +27,7 @@ export function AuthForm({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const registration = mode === "register";
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -78,56 +71,29 @@ export function AuthForm({
   }
   return (
     <main
-      className={
-        registration
-          ? `${styles.login} ${registerStyles.register}`
-          : styles.login
-      }
+      className={`${styles.login} ${styles.welcome}${registration ? ` ${styles.enrollment}` : ""}`}
     >
       <section className={styles.intro}>
-        <Link href="/" className="font-semibold tracking-widest text-primary">
-          <BookOpen aria-hidden="true" />
+        <Link href="/" className={styles.brand}>
+          <BrandMark />
           {kk.name}
         </Link>
-        <p className={styles.eyebrow}>SMARTLIBRARY</p>
-        <h1 className="mt-10 text-4xl font-semibold leading-tight">
-          {registration ? kk.auth.registerTitle : kk.auth.loginTitle}
-        </h1>
-        <p className="mt-5 max-w-md text-lg text-muted-foreground">
-          {registration
-            ? kk.auth.registerDescription
-            : kk.auth.loginDescription}
-        </p>
-        <div
-          className={
-            registration
-              ? `${styles.illustration} ${registerStyles.illustration}`
-              : styles.illustration
-          }
-          aria-hidden="true"
-        >
-          <Image
-            src={loginBooks}
-            alt=""
-            width={1536}
-            height={1024}
-            sizes="(max-width: 767px) 1px, (max-width: 1099px) 440px, 760px"
-            loading="eager"
-          />
-        </div>
-      </section>
-      <section
-        className={
-          registration ? `${styles.card} ${registerStyles.card}` : styles.card
-        }
-      >
-        <header className={styles.cardHeading}>
-          <h2>{registration ? kk.auth.register : "Жүйеге кіру"}</h2>
+        <div className={styles.introCopy}>
+          <h1>{registration ? kk.auth.registerTitle : kk.auth.loginTitle}</h1>
           <p>
             {registration
-              ? "SmartLibrary-ға қосылыңыз!"
-              : "SmartLibrary-ға қайта қош келдіңіз!"}
+              ? kk.auth.registerDescription
+              : kk.auth.loginDescription}
           </p>
+        </div>
+        <div className={styles.ticket} aria-hidden="true">
+          <ReaderCard />
+        </div>
+        <LibrarianModel key={mode} mode={mode} className={styles.librarian} />
+      </section>
+      <section className={styles.card}>
+        <header className={styles.cardHeading}>
+          <h2>{registration ? kk.auth.register : "Жүйеге кіру"}</h2>
         </header>
         {passwordChanged && (
           <p role="status" className="mb-6 rounded-xl bg-muted p-4">
@@ -144,7 +110,7 @@ export function AuthForm({
         ) : (
           <form onSubmit={submit} className="space-y-5" aria-busy={busy}>
             {registration && (
-              <div className="grid gap-5 sm:grid-cols-2">
+              <div className={styles.names}>
                 <label>
                   {kk.auth.firstName} *
                   <UserRound aria-hidden="true" />
@@ -179,7 +145,7 @@ export function AuthForm({
                 name="email"
                 type="email"
                 autoComplete="email"
-                placeholder={registration ? "example@domain.com" : undefined}
+                placeholder="example@domain.com"
                 required
                 maxLength={320}
                 className={inputClass}
@@ -201,24 +167,46 @@ export function AuthForm({
                 />
               </label>
             )}
-            <label className="block">
-              {kk.auth.password} *
-              <LockKeyhole aria-hidden="true" />
-              <input
-                name="password"
-                type="password"
-                autoComplete={
-                  registration ? "new-password" : "current-password"
-                }
-                required
-                minLength={registration ? 12 : 1}
-                maxLength={128}
-                aria-describedby={registration ? "password-hint" : undefined}
-                placeholder={registration ? "Құпиясөз енгізіңіз" : undefined}
-                className={inputClass}
-                disabled={busy}
-              />
-            </label>
+            <div className={registration ? undefined : styles.passwordField}>
+              <label className="block">
+                {kk.auth.password} *
+                <LockKeyhole aria-hidden="true" />
+                <input
+                  name="password"
+                  type={!registration && showPassword ? "text" : "password"}
+                  id={registration ? undefined : "login-password"}
+                  autoComplete={
+                    registration ? "new-password" : "current-password"
+                  }
+                  required
+                  minLength={registration ? 12 : 1}
+                  maxLength={128}
+                  aria-describedby={registration ? "password-hint" : undefined}
+                  placeholder="Құпиясөз енгізіңіз"
+                  className={inputClass}
+                  disabled={busy}
+                />
+              </label>
+              {!registration && (
+                <button
+                  className={styles.visibility}
+                  type="button"
+                  aria-controls="login-password"
+                  aria-label="Енгізілген таңбаларды көрсету"
+                  aria-pressed={showPassword}
+                  title={
+                    showPassword ? "Құпиясөзді жасыру" : "Құпиясөзді көрсету"
+                  }
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <Eye aria-hidden="true" />
+                  ) : (
+                    <EyeOff aria-hidden="true" />
+                  )}
+                </button>
+              )}
+            </div>
             {registration && (
               <>
                 <p id="password-hint" className="text-sm text-muted-foreground">
@@ -255,7 +243,6 @@ export function AuthForm({
                 : registration
                   ? kk.auth.register
                   : kk.auth.login}
-              <ArrowRight aria-hidden="true" />
             </Button>
             <div className={styles.divider} aria-hidden="true">
               Немесе
@@ -271,10 +258,6 @@ export function AuthForm({
           </form>
         )}
       </section>
-      <aside className={styles.quote} aria-hidden="true">
-        <Sprout />
-        <p>Білім бүгін — жақсырақ ертең үшін</p>
-      </aside>
     </main>
   );
 }

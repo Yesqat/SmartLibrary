@@ -1,0 +1,444 @@
+.workspace {
+  --workspace-width: 80rem;
+  min-height: 100svh;
+  padding-bottom: clamp(2.5rem, 6vw, 5rem);
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  column-gap: clamp(0.2rem, 1.1vw, 1.25rem);
+  row-gap: 0.25rem;
+  min-height: 4.75rem;
+  padding: 0.75rem max(5vw, calc((100% - 80rem) / 2));
+  border-bottom: 1px solid #dcdfe5;
+  background: #fff;
+}
+
+.navigation:where(:has(> a[href="/dashboard"])) {
+  flex-wrap: nowrap;
+  column-gap: clamp(0.2rem, 1.1vw, 0.75rem);
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.navigation a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+  padding-inline: 0.5rem;
+  border-radius: 0.55rem;
+  color: #3e4b64;
+  font-size: 0.895rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    background 160ms,
+    color 160ms;
+}
+
+.navigation a:hover,
+.navigation a[aria-current="page"] {
+  background: #eef1ff;
+  color: var(--primary);
+}
+
+.navigation .brand {
+  gap: 0.65rem;
+  margin-inline-end: clamp(0.4rem, 1.75vw, 1.75rem);
+  padding-inline: 0;
+  background: transparent;
+  color: var(--foreground);
+  font-size: 1.4rem;
+  font-weight: 750;
+  letter-spacing: -0.065em;
+}
+
+.brand > svg {
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+}
+
+.navigation .accountLink {
+  padding-inline: 0.95rem;
+  background: #edf0ff;
+  color: #2a43b8;
+}
+
+.navDivider {
+  display: none;
+}
+
+@media (min-width: 64.01rem) {
+  .navDivider {
+    display: block;
+    flex-basis: 100%;
+    height: 1px;
+    margin-block: 0.2rem;
+    background: #e6e8ef;
+  }
+
+  .navigation:has(.navDivider) .accountLink {
+    margin-inline-start: auto;
+  }
+}
+
+.navigation:has(> a:nth-child(3):last-child) .accountLink {
+  margin-left: auto;
+}
+
+.title,
+.layout,
+.adminLayout {
+  width: min(90%, var(--workspace-width));
+  margin-inline: auto;
+}
+
+.title {
+  margin-top: clamp(2.2rem, 4.2vw, 4rem);
+  margin-bottom: clamp(1.5rem, 2.4vw, 2.25rem);
+  color: var(--foreground);
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 500;
+  font-size: clamp(2.15rem, 4.45vw, 4.2rem);
+  letter-spacing: -0.055em;
+  line-height: 1.08;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.adminLayout {
+  display: grid;
+  gap: 1.75rem;
+}
+
+.content {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  animation: arrive 320ms ease-out;
+}
+
+.content:is([data-role="ADMIN"], [data-role="LIBRARIAN"])
+  :where(
+    form[class~="items-end"],
+    form:has(> .field),
+    form:has(> fieldset > .field)
+  ):not(:where([class~="border"])) {
+  min-width: 0;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid #dce1e9;
+  border-radius: 1rem;
+  background: #fff;
+}
+
+.account {
+  margin-bottom: 1.6rem;
+  padding: clamp(1.25rem, 2.4vw, 2rem);
+  border: 1px solid #263c63;
+  border-radius: 1.1rem;
+  background:
+    repeating-radial-gradient(
+      ellipse at 105% 130%,
+      transparent 0 2.7rem,
+      #b5c6ff14 2.75rem 2.8rem,
+      transparent 2.85rem 3.75rem
+    ),
+    linear-gradient(110deg, #19283f, #243958 72%, #324b82);
+  color: white;
+}
+
+.account > h2 {
+  margin-bottom: 0.6rem;
+  color: #d4ddf6;
+  font-size: 0.9rem;
+  font-weight: 550;
+}
+
+.account > p:first-of-type {
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.account > p + p {
+  color: #d4ddf6;
+}
+
+.account :where([data-slot="button"]) {
+  border-color: #8899ba;
+  background: #ffffff10;
+  color: white;
+}
+
+.account :where([data-slot="button"]):hover {
+  background: #ffffff24;
+}
+
+.account .profileLink {
+  color: #d3ddff;
+  text-decoration: underline;
+  text-underline-offset: 0.22em;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(12rem, 100%), 1fr));
+  gap: 0.8rem;
+}
+
+.metrics > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.1rem 1.2rem;
+  border: 1px solid #dce1e9;
+  border-radius: 0.9rem;
+  background: #fff;
+}
+
+.metrics dt {
+  color: #485874;
+  font-size: 0.895rem;
+  line-height: 1.4;
+}
+
+.metrics dd {
+  margin-top: auto;
+  color: #263d7e;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 600;
+  letter-spacing: -0.06em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.content
+  :where([class~="rounded-xl"][class~="border"], fieldset[class~="border"]) {
+  border-color: #dfe2e9;
+  border-radius: 1rem;
+  box-shadow: 0 4px 18px #192e4d06;
+}
+
+.content
+  :where([class~="rounded-xl"][class~="border"]):not(:where([class*="bg-"])) {
+  background-color: #fff;
+}
+
+.content :where(table) {
+  color: #29364e;
+  font-variant-numeric: tabular-nums;
+}
+
+.content :where(thead) {
+  background: #f1f3f8;
+  color: #415471;
+}
+
+.content :where([class~="text-primary"][class~="underline"]) {
+  text-decoration-color: #a6b0de;
+  text-underline-offset: 0.19em;
+}
+
+.input {
+  width: 100%;
+  min-width: 0;
+  min-height: 2.75rem;
+  border: 1px solid #c8cfdd;
+  border-radius: 0.65rem;
+  background-color: #fff;
+  color: var(--foreground);
+  padding: 0.55rem 0.85rem;
+  line-height: 1.45;
+  transition:
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.input:hover {
+  border-color: #9ca8c4;
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+select.input {
+  appearance: none;
+  padding-inline-end: 2.4rem;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #52627d 50%),
+    linear-gradient(135deg, #52627d 50%, transparent 50%);
+  background-position:
+    right 1.12rem center,
+    right 0.86rem center;
+  background-size: 0.28rem 0.28rem;
+  background-repeat: no-repeat;
+}
+
+.field {
+  display: grid;
+  align-content: start;
+  gap: 0.4rem;
+  min-width: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.field .input {
+  font-weight: 400;
+}
+
+.failure {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.8rem;
+  margin-block: 1rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid #ebd9cf;
+  border-radius: 0.9rem;
+  background: #fffaf6;
+  color: #714838;
+}
+
+.failure > svg {
+  flex: none;
+  width: 1.35rem;
+  height: 1.35rem;
+  color: #b05b3c;
+}
+
+.failure > p {
+  flex: 1 1 10rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-block: 1.25rem 0;
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  color: #4c5d79;
+  font-size: 0.88rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.adminNavigation {
+  display: flex;
+  align-self: start;
+  gap: 0.2rem;
+  padding: 0.55rem;
+  overflow-x: auto;
+  border: 1px solid #dfe2e9;
+  border-radius: 1rem;
+  background: #fff;
+  scrollbar-width: thin;
+}
+
+.adminNavigation a {
+  flex-shrink: 0;
+  border-radius: 0.5rem;
+  padding: 0.55rem 0.8rem;
+  color: #45546e;
+  font-size: 0.895rem;
+  font-weight: 550;
+  line-height: 1.45;
+  transition:
+    background 150ms,
+    color 150ms;
+}
+
+.adminNavigation a:hover {
+  background: #eff2fe;
+  color: #2849bb;
+}
+
+.adminNavigation a[aria-current="page"] {
+  background: #233455;
+  color: #fff;
+}
+
+@media (min-width: 72rem) {
+  .adminLayout {
+    grid-template-columns: 13.2rem minmax(0, 1fr);
+  }
+  .adminNavigation {
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 48.01rem) and (max-width: 92rem) {
+  .navigation {
+    column-gap: 0.2rem;
+    padding-inline: 3vw;
+  }
+  .navigation .brand {
+    margin-inline-end: 0.65rem;
+  }
+}
+
+@media (max-width: 48rem) {
+  .navigation {
+    min-height: 4rem;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-block: 0.6rem;
+    scrollbar-width: thin;
+    scrollbar-color: #bec6da transparent;
+  }
+  .navigation > a {
+    flex-shrink: 0;
+  }
+  .input {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 24rem) {
+  .navigation .brand {
+    gap: 0.35rem;
+    font-size: 1.12rem;
+  }
+  .brand > svg {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+  .navigation a {
+    font-size: 0.875rem;
+  }
+  .pager {
+    gap: 0.4rem;
+  }
+}
+
+@keyframes arrive {
+  from {
+    opacity: 0;
+    translate: 0 5px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    animation: none;
+  }
+  .navigation a,
+  .adminNavigation a,
+  .input {
+    transition: none;
+  }
+}

@@ -10,6 +10,7 @@ import { CatalogShell, Failure } from "./shared";
 import { ReserveButton } from "@/features/reservations/reserve-button";
 import { FavoriteButton } from "@/features/reader/favorites";
 import { RecommendationSection } from "@/features/recommendations/section";
+import styles from "./catalog.module.css";
 export function BookDetail({ id }: { id: string }) {
   const result = useQuery({
     queryKey: ["catalog", "book", id],
@@ -39,13 +40,13 @@ export function BookDetail({ id }: { id: string }) {
         <Failure error={result.error} retry={() => void result.refetch()} />
       ) : (
         book && (
-          <div className="grid gap-10 md:grid-cols-[260px_1fr]">
+          <div className={styles.detail}>
             <Cover book={book} />
             <div>
-              <p className="text-lg">
+              <p className={styles.byline}>
                 {book.authors.map((a) => a.full_name).join(", ") || t.none}
               </p>
-              <div className="my-6 rounded-xl border bg-white p-5">
+              <div className={styles.stock}>
                 <p className="font-semibold">
                   {t.available}: {book.available_copies} / {book.total_copies}
                 </p>
@@ -62,7 +63,7 @@ export function BookDetail({ id }: { id: string }) {
               <p className="whitespace-pre-wrap leading-relaxed">
                 {book.description || t.noDescription}
               </p>
-              <dl className="mt-8 grid gap-5 sm:grid-cols-2">
+              <dl className={styles.metadata}>
                 {[
                   [t.isbn, book.isbn],
                   [t.publisher, book.publisher?.name],

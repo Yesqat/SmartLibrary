@@ -59,7 +59,7 @@ Personal tools derive user identity exclusively from backend authentication. The
 
 Every library fact comes from current backend data. Validate returned book references against actual results. Do not reuse conversation availability/due dates as current facts. Minimize context and never send secrets, password hashes or unrelated private records.
 
-LLM configuration requires LLM_PROVIDER, LLM_MODEL and LLM_API_KEY. Their absence must produce a controlled assistant unavailable state while core circulation, standard search and administration continue. Local semantic/recommendation availability depends on local models, not the external LLM. No external credential is required for core library workflows or local ML.
+The assistant uses a provider-specific server credential. Core circulation, standard search and local ML run independently of the external LLM. See the [Groq and OpenAI configuration](AI_ASSISTANT.md#configuration-and-unavailable-behavior).
 
 ## Telemetry and reproducibility
 

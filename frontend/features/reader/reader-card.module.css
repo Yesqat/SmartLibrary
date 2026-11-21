@@ -1,0 +1,92 @@
+.art {
+  display: grid;
+  place-items: center;
+  container-type: inline-size;
+  padding: 1rem;
+  isolation: isolate;
+  pointer-events: none;
+}
+.card {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  align-content: space-between;
+  width: min(86%, 21rem);
+  aspect-ratio: 1.62;
+  padding: clamp(1rem, 5cqi, 1.7rem);
+  transform: rotate(-8deg);
+  border: 1px solid #b6c7ff90;
+  border-radius: 1rem;
+  color: #fff;
+  background: linear-gradient(128deg, #243fbe 0%, #4365ef 48%, #a1baff 100%);
+  box-shadow:
+    0 1px 1px #ffffff80 inset,
+    0 4px 0 -1px #8598fc,
+    0 6px 0 -1px #344cb4,
+    0 19px 36px -7px #080d3999;
+}
+.wordmark,
+.caption {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+}
+.wordmark {
+  gap: 0.45rem;
+  font-size: var(--ticket-wordmark-size, clamp(0.9rem, 4.5cqi, 1.5rem));
+  font-weight: 720;
+  letter-spacing: -0.045em;
+}
+.wordmark svg {
+  width: 1.2em;
+  height: 1.2em;
+}
+.caption {
+  gap: 0.6rem;
+  font-size: var(--ticket-caption-size, clamp(0.8rem, 3.1cqi, 1rem));
+  font-weight: 600;
+}
+.caption svg {
+  width: 1.1em;
+  height: 1.1em;
+}
+.contours {
+  position: absolute;
+  width: 103%;
+  aspect-ratio: 1;
+  bottom: -70%;
+  right: -34%;
+  border-radius: 50%;
+  background: repeating-radial-gradient(
+    ellipse at center,
+    transparent 0 7%,
+    #d6ddff98 7.3% 7.6%,
+    transparent 8% 11%
+  );
+  transform: rotate(-26deg) scaleY(1.4);
+}
+.card::before {
+  position: absolute;
+  content: "";
+  height: 50%;
+  bottom: 0;
+  width: 5px;
+  left: 0;
+  background: #ff8a74;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .card {
+    animation: arrive 0.8s cubic-bezier(0.2, 0.65, 0.2, 1) both;
+  }
+  @keyframes arrive {
+    from {
+      opacity: 0;
+      transform: translateY(12px) rotate(-4deg);
+    }
+    to {
+      opacity: 1;
+      transform: rotate(-8deg);
+    }
+  }
+}

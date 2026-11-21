@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { SlidersHorizontal } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import { searchApi } from "./search-api";
 import { SearchInput } from "./search-input";
 import { SearchFilters } from "./search-filters";
 import { CatalogShell, Failure, inputClass, Pager } from "./shared";
+import styles from "./catalog.module.css";
 
 export function SearchCatalog() {
   const params = useSearchParams();
@@ -33,7 +35,7 @@ function SearchCatalogBody() {
   return (
     <CatalogShell title={t.title}>
       <form
-        className="mb-4 flex"
+        className="mb-3 flex"
         onSubmit={(e) => {
           e.preventDefault();
           const params = new URLSearchParams(serialized);
@@ -44,7 +46,7 @@ function SearchCatalogBody() {
       >
         <SearchInput value={draft} onChange={setDraft} />
       </form>
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
+      <div className={styles.tools}>
         <label className="flex items-center gap-3 text-sm">
           {s.mode}
           <select
@@ -69,6 +71,7 @@ function SearchCatalogBody() {
           aria-expanded={filters}
           onClick={() => setFilters(!filters)}
         >
+          <SlidersHorizontal size={16} aria-hidden="true" />
           {filters ? s.hideFilters : s.selectFilters}
         </Button>
         <label className="flex items-center gap-3 text-sm">
@@ -112,11 +115,11 @@ function SearchCatalogBody() {
               {s.indexing}
             </p>
           )}
-          <p className="mb-5 text-sm" role="status">
+          <p className={styles.count} role="status">
             {s.results}: {result.data.total}
           </p>
           {result.data.items.length ? (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className={styles.books}>
               {result.data.items.map((book) => (
                 <BookCard
                   key={book.id}
@@ -131,7 +134,7 @@ function SearchCatalogBody() {
               ))}
             </div>
           ) : (
-            <p className="rounded-xl border p-10 text-center">{t.empty}</p>
+            <p className={styles.empty}>{t.empty}</p>
           )}
           <Pager
             page={result.data.page}

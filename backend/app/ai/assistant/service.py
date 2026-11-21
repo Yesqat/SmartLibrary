@@ -120,19 +120,29 @@ def context_history(db: Session, identity: UUID) -> list[dict[str, Any]]:
             .limit(20)
         )
     )
+    referenced_books: dict[UUID, list[dict[str, str]]] = {}
+    for message_id, book_id, title in db.execute(
+        select(AIMessageBook.message_id, Book.id, Book.title)
+        .join(Book, Book.id == AIMessageBook.book_id)
+        .where(AIMessageBook.message_id.in_([row.id for row in rows]), Book.archived_at.is_(None))
+        .order_by(AIMessageBook.position)
+    ):
+        referenced_books.setdefault(message_id, []).append(
+            {"book_id": str(book_id), "title": title}
+        )
     history: list[dict[str, Any]] = []
     remaining = 16000
     for row in rows:
-        # Old factual snapshots are deliberately excluded; only intent and public book IDs remain.
+        # Carry book identities across turns. Availability and personal facts must be read again.
         text = (
             row.content
             if row.role == MessageRole.USER
             else json.dumps(
                 {
                     "previous_intent": row.tool_metadata.get("kind", "unavailable"),
-                    "previous_book_ids": row.tool_metadata.get("book_ids", []),
-                    "instruction": "Past context only. Use current tools for facts.",
-                }
+                    "books_previously_shown_in_order": referenced_books.get(row.id, []),
+                },
+                ensure_ascii=False,
             )
         )
         if len(text) > remaining:
@@ -258,11 +268,9 @@ class AssistantService:
                     "tools": tools.trace,
                     "kind": result.kind if result else "unavailable",
                     "book_ids": [str(book.id) for book in result.books] if result else [],
-                    "provider": "openai"
-                    if self.settings.llm_provider == "openai"
-                    else "unconfigured",
+                    "provider": self.settings.assistant_provider or "unconfigured",
                 },
-                model_name=self.settings.llm_model[:250] or None,
+                model_name=self.settings.assistant_model[:250] or None,
                 latency_ms=int((perf_counter() - start) * 1000),
                 input_tokens=result.input_tokens if result else None,
                 output_tokens=result.output_tokens if result else None,

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { catalog as t } from "@/locales/catalog";
 import { catalogApi } from "./api";
 import { CatalogShell, Failure, inputClass, Pager } from "./shared";
+import styles from "./catalog.module.css";
 export function CatalogList({ staffRoot }: { staffRoot?: string }) {
   const [page, setPage] = useState(1),
     [query, setQuery] = useState(""),
@@ -18,16 +19,16 @@ export function CatalogList({ staffRoot }: { staffRoot?: string }) {
   });
   return (
     <CatalogShell title={t.title}>
-      <div className="mb-8 flex flex-wrap items-end gap-4">
+      <div className={styles.staffTools}>
         <form
-          className="flex grow gap-2"
+          className="flex min-w-0 grow gap-2"
           onSubmit={(e) => {
             e.preventDefault();
             setQuery(draft.trim());
             setPage(1);
           }}
         >
-          <label className="grow">
+          <label className="min-w-0 grow">
             <span className="sr-only">{t.search}</span>
             <input
               className={inputClass}
@@ -65,13 +66,13 @@ export function CatalogList({ staffRoot }: { staffRoot?: string }) {
       ) : (
         <>
           {result.data.items.length ? (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className={styles.books}>
               {result.data.items.map((book) => (
                 <BookCard key={book.id} book={book} staffRoot={staffRoot} />
               ))}
             </div>
           ) : (
-            <p className="rounded-xl border p-10 text-center">{t.empty}</p>
+            <p className={styles.empty}>{t.empty}</p>
           )}
           <Pager page={page} pages={result.data.pages} onChange={setPage} />
         </>

@@ -1,11 +1,13 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
+import { BookOpen, LoaderCircle, Sparkles } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { BookCard } from "@/components/books/book-card";
 import { useAuth } from "@/features/auth/auth-provider";
 import { Failure } from "@/features/catalog/shared";
 import { recommendations as t } from "@/locales/recommendations";
 import { recommendationApi, type RecommendationItem } from "./api";
+import styles from "./recommendations.module.css";
 
 export function RecommendationCard({
   item,
@@ -66,7 +68,7 @@ export function RecommendationCard({
     };
   }, [receipt]);
   return (
-    <div ref={element}>
+    <div ref={element} className={styles.item}>
       <BookCard
         book={item.book}
         onOpen={() => {
@@ -76,7 +78,8 @@ export function RecommendationCard({
             .catch(() => undefined);
         }}
       />
-      <p className="mt-2 text-sm text-muted-foreground">
+      <p className={styles.reason}>
+        <Sparkles aria-hidden="true" />
         {t.reasons[item.reason]}
       </p>
     </div>
@@ -86,9 +89,11 @@ export function RecommendationCard({
 export function RecommendationSection({
   kind,
   bookId,
+  headingAction,
 }: {
   kind: "popular" | "similar" | "personalized";
   bookId?: string;
+  headingAction?: ReactNode;
 }) {
   const { user, status } = useAuth();
   const result = useQuery({
@@ -101,17 +106,26 @@ export function RecommendationSection({
   });
   if (kind === "personalized" && user?.role !== "READER") return null;
   return (
-    <section className="mt-10" aria-label={t.titles[kind]}>
-      <h2 className="mb-5 text-2xl font-semibold">{t.titles[kind]}</h2>
+    <section className={styles.section} aria-label={t.titles[kind]}>
+      <h2 className={styles.heading}>{t.titles[kind]}</h2>
+      {headingAction}
       {result.isPending ? (
-        <p role="status">{t.loading}</p>
+        <p role="status" className={styles.notice}>
+          <LoaderCircle className={styles.loader} aria-hidden="true" />
+          {t.loading}
+        </p>
       ) : result.isError ? (
         <Failure error={result.error} retry={() => void result.refetch()} />
       ) : (
         <>
-          {result.data.indexing_pending && <p role="status">{t.pending}</p>}
+          {result.data.indexing_pending && (
+            <p role="status" className={styles.pending}>
+              {t.pending}
+            </p>
+          )}
           {!result.data.items.length && (
-            <p>
+            <p className={styles.notice}>
+              <BookOpen aria-hidden="true" />
               {kind === "similar" &&
               !result.data.content_available &&
               !result.data.indexing_pending
@@ -119,7 +133,7 @@ export function RecommendationSection({
                 : t.empty}
             </p>
           )}
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className={styles.grid}>
             {result.data.items.map((item) => (
               <RecommendationCard
                 key={`${item.book.id}:${result.data.receipt ?? "public"}`}

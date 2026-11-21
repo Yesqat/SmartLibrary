@@ -25,7 +25,7 @@ export function ReservationList() {
   });
   return (
     <CatalogShell title={t.title}>
-      <div className="mb-6 flex gap-3" aria-label={t.title}>
+      <div className="mb-6 flex flex-wrap gap-3" aria-label={t.title}>
         {[true, false].map((value) => (
           <Button
             key={String(value)}

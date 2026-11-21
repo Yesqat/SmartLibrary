@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import styles from "./loans.module.css";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { CatalogShell, Failure, Pager } from "@/features/catalog/shared";
@@ -24,15 +25,17 @@ export function LoanCard({ loan }: { loan: Loan }) {
     Math.ceil((clock - new Date(loan.due_at).getTime()) / 86400000),
   );
   return (
-    <article className="rounded-xl border bg-white p-5">
+    <article className={styles.loan}>
       <Link
         className="text-lg font-semibold text-primary underline"
         href={`/books/${loan.book_id}`}
       >
         {loan.book_title}
       </Link>
-      <p className="mt-2">{t.states[overdue ? "OVERDUE" : loan.status]}</p>
-      <dl className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+      <p className={styles.state} data-overdue={overdue}>
+        {t.states[overdue ? "OVERDUE" : loan.status]}
+      </p>
+      <dl className={styles.details}>
         <div>
           <dt>{t.inventory}</dt>
           <dd>{loan.inventory_number}</dd>

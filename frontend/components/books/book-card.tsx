@@ -1,22 +1,29 @@
 import Image from "next/image";
 import Link from "next/link";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Library } from "lucide-react";
 import type { Book } from "@/features/catalog/api";
 import { catalog as t } from "@/locales/catalog";
+import styles from "./book-card.module.css";
+
 export function Cover({ book }: { book: Book }) {
   return (
-    <div className="relative flex aspect-[3/4] items-center justify-center overflow-hidden rounded-lg bg-emerald-950/5">
+    <div
+      className={styles.cover}
+      data-tone={book.id.charCodeAt(book.id.length - 1) % 4}
+    >
       {book.cover_url ? (
         <Image
           src={book.cover_url}
           alt={book.title}
           fill
-          className="object-contain"
+          className={styles.image}
           unoptimized
           sizes="(max-width: 640px) 50vw, 250px"
         />
       ) : (
-        <BookOpen aria-label={t.noCover} className="size-14 text-primary/40" />
+        <div className={styles.jacket} role="img" aria-label={t.noCover}>
+          <BookOpen aria-hidden="true" />
+        </div>
       )}
     </div>
   );
@@ -31,30 +38,29 @@ export function BookCard({
   onOpen?: () => void;
 }) {
   return (
-    <article className="rounded-xl border bg-white p-4 shadow-sm">
+    <article className={styles.card}>
       <Link
         aria-label={book.title}
         onClick={onOpen}
         href={staffRoot ? `${staffRoot}/books/${book.id}` : `/books/${book.id}`}
-        className="grid gap-4"
+        className={styles.link}
       >
         <Cover book={book} />
-        <h2 className="text-lg font-semibold">{book.title}</h2>
+        <h2>{book.title}</h2>
       </Link>
-      <p className="mt-1 text-sm">
+      <p className={styles.author}>
         {book.authors.map((a) => a.full_name).join(", ") || t.none}
       </p>
-      <p className="mt-3 text-sm font-medium">
+      <p className={styles.availability}>
+        <Library aria-hidden="true" />
         {t.available}: {book.available_copies} / {book.total_copies}
       </p>
-      <p className="mt-2 text-xs opacity-70">
+      <p className={styles.meta}>
         {book.language}
         {book.publication_year ? ` · ${book.publication_year}` : ""}
         {book.categories[0] ? ` · ${book.categories[0].name}` : ""}
       </p>
-      {book.archived_at && (
-        <p className="mt-2 text-sm text-amber-800">{t.archived}</p>
-      )}
+      {book.archived_at && <p className={styles.archived}>{t.archived}</p>}
     </article>
   );
 }

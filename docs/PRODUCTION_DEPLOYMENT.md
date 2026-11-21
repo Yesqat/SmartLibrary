@@ -46,7 +46,8 @@ seed refuses production; never enable it to obtain a first Admin.
 Install/download the pinned embedding model and reviewed categorization artifact
 using SEMANTIC_SEARCH.md and CATEGORIZATION.md. Missing AI artifacts/provider
 credentials do not prevent catalog/circulation readiness. Then generate the real
-catalog index. LLM_PROVIDER/LLM_MODEL/LLM_API_KEY remain optional external settings.
+catalog index. Optional AI provider settings are documented in the
+[assistant setup guide](AI_ASSISTANT.md#configuration-and-unavailable-behavior).
 
 ## Ingress and runtime behavior
 

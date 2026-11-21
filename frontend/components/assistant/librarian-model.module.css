@@ -1,0 +1,56 @@
+.portrait {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.poster,
+.stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.poster {
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+.stage {
+  opacity: 0;
+}
+
+.stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.portrait[data-ready="true"] .stage {
+  opacity: 1;
+}
+
+.portrait[data-ready="true"] .poster {
+  opacity: 0;
+}
+
+.gesture {
+  position: absolute;
+  left: 62.8%;
+  top: 22.4%;
+  width: 10.4%;
+  color: #ffd27e;
+  filter: drop-shadow(0 2px 4px #36284630);
+}
+
+.wave {
+  position: absolute;
+  left: 93.5%;
+  top: 28.3%;
+  width: 10.3%;
+  color: #b8c5ff;
+  transform: scaleX(-1) rotate(-6deg);
+  filter: drop-shadow(0 0 5px #858dff88);
+}

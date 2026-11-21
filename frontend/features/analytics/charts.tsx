@@ -13,7 +13,7 @@ import {
 } from "recharts";
 import { analytics as t } from "@/locales/analytics";
 import type { Point } from "./api";
-const colors = ["#047857", "#2563eb", "#a16207"];
+const colors = ["#3453c9", "#be5c47", "#338080"];
 function DataTable({ rows }: { rows: { name: string; count: number }[] }) {
   return (
     <details className="mt-4">
@@ -71,7 +71,7 @@ export function TrendChart({
               data={data}
               margin={{ top: 10, right: 15, bottom: 30, left: 15 }}
             >
-              <CartesianGrid strokeDasharray="3 3" />
+              <CartesianGrid stroke="#e0e5f0" strokeDasharray="3 4" />
               <XAxis
                 dataKey="date"
                 minTickGap={30}
@@ -95,7 +95,7 @@ export function TrendChart({
                   dataKey={`s${i}`}
                   name={line.name}
                   stroke={colors[i % colors.length]}
-                  strokeWidth={2}
+                  strokeWidth={2.5}
                   dot={false}
                 />
               ))}
@@ -137,7 +137,7 @@ export function DistributionChart({
               data={rows}
               margin={{ left: 10, right: 20, bottom: 25, top: 10 }}
             >
-              <CartesianGrid strokeDasharray="3 3" />
+              <CartesianGrid stroke="#e0e5f0" strokeDasharray="3 4" />
               <XAxis
                 type="number"
                 domain={[0, "auto"]}
@@ -159,7 +159,12 @@ export function DistributionChart({
                 }
               />
               <Tooltip />
-              <Bar dataKey="count" name={t.count} fill={colors[0]} />
+              <Bar
+                dataKey="count"
+                name={t.count}
+                fill={colors[0]}
+                radius={[0, 4, 4, 0]}
+              />
             </BarChart>
           </ResponsiveContainer>
         </div>

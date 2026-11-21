@@ -7,12 +7,13 @@ an external LLM.
 
 ## Architecture and grounding
 
-`LLMClient` is the provider boundary. The implemented `openai` adapter uses the
-Responses API with strict function schemas and a strict final presentation plan.
+`LLMClient` supports Groq Chat Completions and OpenAI Responses. Groq submits
+the final answer plan through a local function call. OpenAI uses structured output.
 The LLM interprets multilingual questions/follow-ups, selects read-only tools and
 ranks their returned references. It cannot supply arbitrary final factual prose.
-The server renders selected current evidence in Kazakh and validates every card
-against results retrieved in that turn. This deliberately constrained answer style
+The server renders selected current evidence in the language of the question
+(Kazakh, Russian or English) and validates every card against results retrieved
+in that turn. Catalog titles, names and excerpts retain their original wording. This answer style
 prevents model-written availability, due dates, rules and invented catalog IDs.
 It is real LLM tool orchestration; factual formatting is deterministic backend code.
 No production fake provider or generated fallback answer exists.
@@ -37,7 +38,7 @@ Failures produce unavailable evidence, never a fabricated empty catalog.
 Final references are validated against this turn's tool outputs. Historical book
 cards refresh current availability when loaded. Historical answer text is labeled
 with its response time. Old facts are excluded from subsequent model context;
-the model receives previous intent/public book IDs and must query facts again.
+the model receives the previous intent and ordered public book titles/IDs, and queries facts again.
 Context is capped at twenty messages and 16,000 characters. Each question is
 limited to 2,000 characters, four provider rounds and six tools, with a 60-second
 orchestration budget, up to 20 seconds per provider call and bounded HTTP output.
@@ -61,14 +62,31 @@ arguments, provider payloads, passwords, keys or credentials are logged.
 
 ## Configuration and unavailable behavior
 
-Set private `LLM_PROVIDER=openai`, `LLM_MODEL` to a Responses/function-calling model
-available in the operator's account, and `LLM_API_KEY`. No model/account entitlement
-is presumed and no credential is committed. Restart the backend after changing
-configuration. The destination is fixed HTTPS api.openai.com with redirects disabled.
-Provider storage is disabled (`store=false`); bounded context and necessary tool
-data are still transmitted. The UI explains this and asks users not to send secrets.
+Create a GroqCloud API key on your Free tier account. Put the following settings
+in the private `.env` used by Docker Compose. Replace the placeholder with your
+key. If switching providers, replace the existing provider and model values.
+[Groq API keys](https://console.groq.com/keys) · [Free tier limits](https://console.groq.com/docs/rate-limits)
 
-Missing/unsupported configuration, network failures, timeouts, refusals, invalid
+```dotenv
+LLM_PROVIDER=groq
+LLM_MODEL=openai/gpt-oss-120b
+GROQ_API_KEY=<your GroqCloud API key>
+```
+
+With the default template, setting only `GROQ_API_KEY` selects the same provider
+and model. To use OpenAI, set `LLM_PROVIDER=openai`, an account-accessible
+Responses/function-calling `LLM_MODEL` and `LLM_API_KEY`.
+
+From the checkout containing the updated code, recreate the backend with
+`docker compose up -d --build --no-deps backend`. For a Compose override or
+production setup, pass your usual project, environment and Compose file options.
+As a Reader, open `/assistant`, start a conversation and ask about the available
+copies of a known catalog title. Compare the count and shelf to the book detail page.
+
+Both adapters send bounded conversation context and tool results over HTTPS
+to their fixed API host with redirects disabled. OpenAI requests use `store=false`.
+
+Missing/unsupported configuration, exhausted provider quotas, network failures, timeouts, refusals, invalid
 output and ungrounded references produce AI_SERVICE_UNAVAILABLE. Redis failure is
 closed safely. Catalog, standard search, local recommendations and circulation
 remain independent. New provider implementations belong behind LLMClient only.
@@ -80,14 +98,15 @@ chronological within each page); POST `/{id}/messages` with content/request_id.
 No client-selected owner. Returned message includes safe content, books, timestamp
 and optional error_code. Raw tool/provider/auth secrets are not API fields.
 
-## Verification and limitation
+## Verification
 
-PostgreSQL integration uses real services, Redis, actual E5 embeddings and storage;
-only the external provider is scripted. Adapter tests intercept only external HTTP.
-Browser verification exercised real unconfigured-provider failure and conversation
-persistence. A live authenticated external model response has not been verified:
-operator credentials/model access and an end-to-end multilingual quality evaluation
-remain external deployment requirements. No LLM quality or uptime is fabricated.
+The automated suite checks the reader endpoint, real PostgreSQL copy states,
+Redis, conversation ownership and a scripted Groq HTTP round trip.
+A separate live check used Groq with an isolated catalog. In one conversation,
+it recommended a Python book in Kazakh, reported zero available copies in Russian
+after the last copy was reserved, returned the book's metadata in English and
+reported an absent ISBN in Kazakh.
 
-Adapter references: [official function calling](https://developers.openai.com/api/docs/guides/function-calling)
-and [structured output](https://developers.openai.com/api/docs/guides/structured-outputs).
+Provider documentation covers [Groq local tool calling](https://console.groq.com/docs/tool-use/local-tool-calling),
+[OpenAI function calling](https://developers.openai.com/api/docs/guides/function-calling)
+and [OpenAI structured output](https://developers.openai.com/api/docs/guides/structured-outputs).

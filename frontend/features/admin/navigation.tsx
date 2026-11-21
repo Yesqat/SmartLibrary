@@ -2,13 +2,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { admin as t } from "@/locales/admin";
+import styles from "@/features/catalog/workspace.module.css";
 export function AdminNavigation() {
   const path = usePathname();
   return (
-    <nav
-      aria-label={t.dashboard}
-      className="mb-6 flex flex-wrap gap-2 xl:flex-col"
-    >
+    <nav aria-label={t.dashboard} className={styles.adminNavigation}>
       {[
         ["/admin", t.dashboard],
         ["/admin/users", t.users],
@@ -28,7 +26,6 @@ export function AdminNavigation() {
         ["/admin/audit-logs", t.audit],
       ].map(([href, label]) => (
         <Link
-          className={`rounded-lg px-3 py-2 text-sm ${path === href ? "bg-primary text-white" : "bg-white text-primary hover:bg-emerald-50"}`}
           key={href}
           href={href}
           aria-current={path === href ? "page" : undefined}

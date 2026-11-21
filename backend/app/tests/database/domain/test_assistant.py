@@ -58,6 +58,8 @@ class ExternalScript:
             answer=self.final
             or AnswerPlan(
                 kind="results",
+                language="kk",
+                presentation="search",
                 book_refs=[b["ref"] for result in results for b in result.get("books", [])][:8],
                 evidence_refs=[r["evidence_ref"] for r in results],
             ),
@@ -112,6 +114,9 @@ def test_grounded_search_live_availability_history_and_idempotence(
     assert "0 дана" in response.json()["content"]
     old = [m["content"] for m in script.history if m.get("role") == "assistant"]
     assert old and "available_copies" not in str(old)
+    assert json.loads(old[-1])["books_previously_shown_in_order"] == [
+        {"book_id": book["id"], "title": book["title"]}
+    ]
     assert reader["email"] not in str(script.history)
     with Session(domain_db) as db:
         assert (
@@ -279,7 +284,13 @@ def test_provider_failures_are_safe_and_core_survives(client, actor, monkeypatch
         external(
             monkeypatch,
             [("get_library_rules", {})],
-            AnswerPlan(kind="results", book_refs=[str(uuid4())], evidence_refs=[]),
+            AnswerPlan(
+                kind="results",
+                language="kk",
+                presentation="search",
+                book_refs=[str(uuid4())],
+                evidence_refs=[],
+            ),
         )
     elif mode != "unconfigured":
 
@@ -322,7 +333,13 @@ def test_concurrent_turn_and_midflight_revocation(client, actor, domain_db, monk
             entered.set()
             assert release.wait(10)
             return ProviderReply(
-                answer=AnswerPlan(kind="clarify_topic", book_refs=[], evidence_refs=[])
+                answer=AnswerPlan(
+                    kind="clarify_topic",
+                    language="kk",
+                    presentation="search",
+                    book_refs=[],
+                    evidence_refs=[],
+                )
             )
 
     monkeypatch.setattr(provider, "provider", lambda settings: SlowProvider())

@@ -4,16 +4,12 @@ import Link from "next/link";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  ArrowRight,
-  BookOpen,
   Camera,
   ImageIcon,
   Mail,
   Phone,
-  Quote,
   Save,
   ShieldCheck,
-  Sprout,
   Star,
   Trash2,
   Upload,
@@ -31,48 +27,7 @@ import type { Reference } from "@/features/catalog/api";
 import { checkSession, type User } from "@/services/api-client";
 import { reader as t } from "@/locales/reader";
 import { readerApi, type Preferences } from "./api";
-import profileBooks from "./assets/profile-books.png";
 import styles from "./profile.module.css";
-
-function ProfileHero() {
-  return (
-    <div className={styles.hero}>
-      <div className={styles.heroInner}>
-        <div className={styles.intro}>
-          <p className={styles.eyebrow}>ЖЕКЕ КАБИНЕТ</p>
-          <p className={styles.title} aria-hidden="true">
-            Профиль
-          </p>
-          <p className={styles.description}>
-            Жеке мәліметтеріңізді басқарыңыз және кітапханадағы тәжірибеңізді
-            ыңғайлы етіңіз.
-          </p>
-          <blockquote className={styles.quote}>
-            <Quote aria-hidden="true" />
-            <div>
-              Білім өзіңнен басталады.<cite>— Абай Құнанбайұлы</cite>
-            </div>
-          </blockquote>
-        </div>
-        <div className={styles.artwork} aria-hidden="true">
-          <Image
-            src={profileBooks}
-            alt=""
-            width={1536}
-            height={1024}
-            sizes="(max-width: 767px) 1px, (max-width: 1199px) 45vw, 460px"
-            loading="eager"
-          />
-          <div className={styles.motto}>
-            <Sprout />
-            <p>Жақсы оқырман — жақсы болашақ!</p>
-            <span />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function ProfileForm({ user }: { user: User }) {
   const cache = useQueryClient();
@@ -297,8 +252,11 @@ export function Profile() {
   return (
     <div className={styles.profile}>
       <CatalogShell title={t.profile}>
-        <ProfileHero />
-        <div className={styles.content}>
+        <p className={styles.intro}>
+          Жеке мәліметтеріңіз бен оқу қызығушылықтарыңызды осы жерден өзгерте
+          аласыз.
+        </p>
+        <div>
           {result.isPending ? (
             <p role="status">{t.loading}</p>
           ) : result.isError ? (
@@ -356,22 +314,8 @@ export function Profile() {
                       href="/account/security"
                     >
                       {t.security}
-                      <ArrowRight aria-hidden="true" />
                     </Link>
                   </section>
-                </div>
-                <div className={styles.supportCard}>
-                  <div className={styles.infoHeading}>
-                    <span className={styles.smallBadge}>
-                      <BookOpen aria-hidden="true" />
-                    </span>
-                    <h2>Кітаптар әлемі әрқашан сізбен!</h2>
-                  </div>
-                  <p>
-                    Жеке кабинетіңізді жаңартып, оқу тәжірибеңізді одан да
-                    ыңғайлы етіңіз.
-                  </p>
-                  <span className={styles.accentLine} aria-hidden="true" />
                 </div>
               </aside>
             </div>

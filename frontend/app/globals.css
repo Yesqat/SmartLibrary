@@ -8,25 +8,64 @@
   --color-primary-foreground: var(--primary-foreground);
   --color-border: var(--border);
   --color-ring: var(--ring);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-destructive: var(--destructive);
+  --font-sans: "Segoe UI", system-ui, sans-serif;
 }
+
 :root {
-  --background: #f7f5f0;
-  --foreground: #1d302a;
-  --primary: #225747;
+  --background: #f6f5f1;
+  --foreground: #17233a;
+  --primary: #284cdd;
   --primary-foreground: #fff;
-  --border: #d4dcd5;
-  --ring: #225747;
-  --radius: 0.625rem;
+  --border: #d9dce5;
+  --ring: #375ae3;
+  --muted: #eaedf6;
+  --muted-foreground: #56637a;
+  --destructive: #af3542;
+  --radius: 0.75rem;
+  color-scheme: light;
 }
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, sans-serif;
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: "Segoe UI", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: #cbd7ff;
+    color: #13213e;
+  }
+
+  :where(input[type="checkbox"], input[type="radio"], progress) {
+    accent-color: var(--primary);
+  }
+
+  :where(button:not(:disabled), select:not(:disabled)) {
+    cursor: pointer;
+  }
 }
-* {
-  border-color: var(--border);
-}
-*:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 4px;
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

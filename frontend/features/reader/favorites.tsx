@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Heart } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { BookCard } from "@/components/books/book-card";
@@ -42,6 +43,11 @@ export function FavoriteButton({
         aria-pressed={query.data?.is_favorite ?? false}
         onClick={() => mutation.mutate(!query.data?.is_favorite)}
       >
+        <Heart
+          size={16}
+          aria-hidden="true"
+          fill={query.data?.is_favorite ? "currentColor" : "none"}
+        />
         {query.data?.is_favorite ? t.removeFavorite : t.addFavorite}
       </Button>
       {query.isError && (

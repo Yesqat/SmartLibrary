@@ -7,8 +7,8 @@ staff workflows, multilingual retrieval, reviewed ML and database-derived report
 
 MASTER_SPECIFICATION.md is the immutable contract for PHASES 0–22.
 **PROJECT COMPLETE — FINAL VERIFICATION PASSED.**
-All executable applicable checks passed; live external LLM inference and public
-hosting remain explicitly unverified operator requirements. See the
+All executable applicable checks passed. The [AI librarian guide](docs/AI_ASSISTANT.md#verification)
+records the subsequent live Groq check. Public hosting remains an operator requirement. See the
 [final report](docs/FINAL_IMPLEMENTATION_REPORT.md), [A–X acceptance matrix](docs/FINAL_ACCEPTANCE_MATRIX.md)
 and [final reviews](docs/FINAL_REVIEWS.md) for evidence and measured limitations.
 
@@ -98,11 +98,11 @@ and cold-start recommendations work independently.
 
 ## External configuration and production
 
-LLM_PROVIDER=openai, an account-accessible LLM_MODEL and private LLM_API_KEY enable
-the external Responses adapter. Without them, the assistant returns
-AI_SERVICE_UNAVAILABLE; core workflows and local ML remain operational. No fake
-production answer substitutes for an unavailable provider. Real external-provider
-quality/availability has not been verified without credentials.
+The AI librarian supports GroqCloud and OpenAI. For Groq, set `LLM_PROVIDER=groq`,
+`LLM_MODEL=openai/gpt-oss-120b` and a private `GROQ_API_KEY` in the project’s
+`.env`. Apply the change with `docker compose up -d --build --no-deps backend`.
+Readers can then ask about the live catalog in Kazakh, Russian or English.
+See the [assistant setup and verification guide](docs/AI_ASSISTANT.md).
 
 Use [production setup](docs/PRODUCTION_DEPLOYMENT.md) for independent credentials,
 first Admin, HTTPS, trusted certificate/domain and deployment checks. Local TLS

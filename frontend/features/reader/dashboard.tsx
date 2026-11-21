@@ -2,20 +2,17 @@
 import Link from "next/link";
 import Image from "next/image";
 import {
-  ArrowRight,
   Bell,
   BookOpen,
   Bookmark,
   CalendarDays,
   Clock3,
   Heart,
-  Quote,
-  Sprout,
-  UserRound,
 } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Failure } from "@/features/catalog/shared";
+import { LibrarianModel } from "@/components/assistant/librarian-model";
+import { CatalogNavigation, Failure } from "@/features/catalog/shared";
 import { useAuth } from "@/features/auth/auth-provider";
 import { reservationApi } from "@/features/reservations/api";
 import { reservations as rt } from "@/locales/reservations";
@@ -25,7 +22,7 @@ import { logout } from "@/services/api-client";
 import { readerApi, readerDate } from "./api";
 import { LoanCard } from "./loans";
 import { RecommendationSection } from "@/features/recommendations/section";
-import books from "@/features/auth/assets/login-books.png";
+import { ReaderCard } from "./reader-card";
 import styles from "./dashboard.module.css";
 export function ReaderDashboard() {
   const { user } = useAuth();
@@ -47,79 +44,38 @@ export function ReaderDashboard() {
   const exit = useMutation({ mutationFn: logout });
   return (
     <div className={styles.dashboard}>
-      <header className={styles.header}>
-        <nav className={styles.navigation} aria-label={catalog.title}>
-          <Link href="/" className={styles.brand}>
-            <BookOpen aria-hidden="true" />
-            SmartLibrary
-          </Link>
-          <div className={styles.navigationLinks}>
-            <Link href="/catalog">{catalog.title}</Link>
-            <Link href="/reservations">{t.reservations}</Link>
-            <Link href="/my-books">{t.loans}</Link>
-            <Link href="/favorites">{t.favorites}</Link>
-            <Link href="/notifications">{t.notifications}</Link>
-            <Link href="/assistant">AI кітапханашы</Link>
-            <Link href="/dashboard" aria-current="page">
-              {catalog.account}
-            </Link>
-            <Link href="/account/profile" className={styles.profileLink}>
-              {t.profile}
-              <UserRound aria-hidden="true" />
-            </Link>
-          </div>
-        </nav>
-      </header>
+      <CatalogNavigation currentHref="/dashboard" />
       <main>
         <section className={styles.hero} aria-labelledby="dashboard-greeting">
-          <div className={styles.heroInner}>
-            <div className={styles.welcome}>
-              <h1 id="dashboard-greeting">
-                {t.greeting}, {user?.first_name ?? ""}{" "}
-                <span aria-hidden="true">👋</span>
-              </h1>
-              <p className={styles.subtitle}>
-                Білімге апаратын жол әрқашан ашық!
-              </p>
-              <p className={styles.quote}>
-                <Quote aria-hidden="true" />
-                Жақсы кітап — жарқын болашаққа бастар көпір.
-              </p>
-              <div className={styles.actions}>
-                <Link className={styles.primaryAction} href="/account/profile">
-                  {t.profile} <ArrowRight aria-hidden="true" />
-                </Link>
-                <Link
-                  className={styles.secondaryAction}
-                  href="/account/security"
-                >
-                  {t.security}
-                </Link>
-                <Button
-                  variant="outline"
-                  className={styles.secondaryAction}
-                  disabled={exit.isPending}
-                  onClick={() => exit.mutate()}
-                >
-                  {t.logout}
-                </Button>
-              </div>
-              {exit.isError && <Failure error={exit.error} />}
+          <div className={styles.backdrop} aria-hidden="true" />
+          <div className={styles.welcome}>
+            <p className={styles.eyebrow}>{catalog.account}</p>
+            <h1 id="dashboard-greeting">
+              {t.greeting}, {user?.first_name ?? ""}
+            </h1>
+            <div className={styles.actions}>
+              <Link className={styles.primaryAction} href="/account/profile">
+                {t.profile}
+              </Link>
+              <Link className={styles.secondaryAction} href="/account/security">
+                {t.security}
+              </Link>
+              <Button
+                variant="outline"
+                className={styles.secondaryAction}
+                disabled={exit.isPending}
+                onClick={() => exit.mutate()}
+              >
+                {t.logout}
+              </Button>
             </div>
-            <div className={styles.illustration} aria-hidden="true">
-              <Image
-                src={books}
-                alt=""
-                width={1536}
-                height={1024}
-                sizes="(max-width: 767px) 1px, (max-width: 1099px) 340px, 480px"
-                loading="eager"
-              />
-              <div className={styles.motivation}>
-                <Sprout />
-                <p>Бүгін де білімге бір қадам жақынырақ</p>
-              </div>
+            {exit.isError && <Failure error={exit.error} />}
+          </div>
+          <div className={styles.art} aria-hidden="true">
+            <div className={styles.ticket}>
+              <ReaderCard />
             </div>
+            <LibrarianModel mode="account" className={styles.figure} />
           </div>
         </section>
         <div className={styles.content}>
@@ -197,7 +153,7 @@ export function ReaderDashboard() {
               <h2 id="dashboard-loans">{t.loans}</h2>
               {!loans.isPending && !loans.isError && (
                 <Link href="/my-books" className={styles.viewAll}>
-                  Барлығын көру <ArrowRight aria-hidden="true" />
+                  Барлығын көру
                 </Link>
               )}
             </div>

@@ -10,6 +10,9 @@ def unavailable() -> AppError:
     return AppError("AI_SERVICE_UNAVAILABLE", "AI көмекшісі уақытша қолжетімсіз.", 503)
 
 
+Language = Literal["kk", "ru", "en"]
+
+
 class AnswerPlan(BaseModel):
     """No free-form library facts: the server renders only validated evidence."""
 
@@ -17,8 +20,12 @@ class AnswerPlan(BaseModel):
     kind: Literal[
         "results", "clarify_topic", "clarify_language", "clarify_availability", "unsupported"
     ]
-    book_refs: list[str] = Field(max_length=8)
-    evidence_refs: list[str] = Field(max_length=6)
+    language: Language
+    presentation: Literal["search", "recommendation", "details", "availability"]
+    book_refs: list[str] = Field(max_length=8, description="Selected books[].ref from this turn.")
+    evidence_refs: list[str] = Field(
+        max_length=6, description="Tool evidence_ref values from this turn."
+    )
 
 
 @dataclass(frozen=True)

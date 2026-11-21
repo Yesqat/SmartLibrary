@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -13,7 +12,6 @@ import {
   Clock,
   ClockAlert,
   Inbox,
-  Sprout,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CatalogShell, Failure, Pager } from "@/features/catalog/shared";
@@ -24,42 +22,7 @@ import {
   readerDate,
   type Notification,
 } from "./api";
-import notificationBooks from "./assets/notification-books.png";
 import styles from "./notifications.module.css";
-
-function NotificationsHero() {
-  return (
-    <div className={styles.hero}>
-      <div className={styles.heroInner}>
-        <div className={styles.intro}>
-          <p className={styles.eyebrow}>ХАБАРЛАМАЛАР</p>
-          <p className={styles.title} aria-hidden="true">
-            {t.notifications}
-          </p>
-          <p className={styles.description}>
-            Кітапханаңыздағы маңызды жаңалықтар мен ескертулерді осы жерден
-            қараңыз.
-          </p>
-        </div>
-        <div className={styles.artwork} aria-hidden="true">
-          <Image
-            src={notificationBooks}
-            alt=""
-            width={1536}
-            height={1024}
-            sizes="(max-width: 767px) 1px, (max-width: 1199px) 40vw, 400px"
-            loading="eager"
-          />
-          <div className={styles.motto}>
-            <Sprout />
-            <p>Уақытылы ақпарат — үлкен мүмкіндік!</p>
-            <span />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function NotificationIcon({ type }: { type: Notification["type"] }) {
   const Icon =
@@ -96,7 +59,10 @@ export function Notifications() {
   return (
     <div className={styles.notifications}>
       <CatalogShell title={t.notifications}>
-        <NotificationsHero />
+        <p className={styles.intro}>
+          Кітапханаңыздағы маңызды жаңалықтар мен ескертулерді осы жерден
+          қараңыз.
+        </p>
         <div className={styles.workspace}>
           <aside className={styles.sidebar} aria-label="Хабарлама сүзгісі">
             <h2 className={styles.filterHeading}>
@@ -134,13 +100,6 @@ export function Notifications() {
                 <CheckCheck aria-hidden="true" />
                 {t.readAll}
               </Button>
-            </div>
-            <div className={styles.helper}>
-              <Sprout aria-hidden="true" />
-              <p>
-                Хабарламаларды уақытында қадағалап, кітапхана мүмкіндіктерін
-                толық пайдаланыңыз!
-              </p>
             </div>
           </aside>
           <section className={styles.feed} aria-label={t.notifications}>

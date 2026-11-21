@@ -19,6 +19,7 @@ from app.repositories.borrowings import borrowing_page
 from app.repositories.catalog import get_book
 from app.repositories.reservations import owned_page
 from app.schemas.catalog import BookRead
+from app.schemas.recommendations import RecommendationPage
 from app.schemas.search import SearchParams
 from app.services.audit.events import AuditContext
 from app.services.auth.service import AuthService
@@ -31,9 +32,15 @@ class Empty(BaseModel):
 
 
 class SearchInput(Empty):
-    q: str = Field(min_length=1, max_length=500)
+    q: str = Field(
+        max_length=500, description="Short catalog term, or empty for a filter-only list."
+    )
     available: bool | None
-    language: str | None = Field(pattern=r"^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$", max_length=35)
+    language: str | None = Field(
+        pattern=r"^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$",
+        max_length=35,
+        description="Requested book language (kk, ru, en, etc.), null if unspecified.",
+    )
 
 
 class BookInput(Empty):
@@ -64,7 +71,7 @@ TOOLS: dict[str, tuple[type[BaseModel], str]] = {
     "get_similar_books": (BookInput, "Find up to 8 books using actual catalog vectors."),
     "get_recommendations": (
         Empty,
-        "Recommendations for authenticated Reader, including cold start.",
+        "General recommendations for the authenticated Reader. For a specific topic use search.",
     ),
     "get_my_borrowings": (
         PersonalInput,
@@ -91,6 +98,19 @@ def definitions() -> list[dict[str, Any]]:
     ]
 
 
+def excerpt(description: str, query: str) -> str:
+    """Give the model and the reader a short catalog excerpt around the matching term."""
+    text = description.strip()
+    if len(text) <= 320:
+        return text
+    position = text.casefold().find(query.casefold()) if query else 0
+    start = max(0, position - 80)
+    if start and (space := text.rfind(" ", max(0, start - 40), start + 1)) >= 0:
+        start = space + 1
+    end = start + 320
+    return ("…" if start else "") + text[start:end].strip() + ("…" if end < len(text) else "")
+
+
 class ToolContext:
     def __init__(
         self, engine: Engine, settings: Settings, principal: Principal, context: AuditContext
@@ -98,7 +118,7 @@ class ToolContext:
         self.engine, self.settings, self.principal = engine, settings, principal
         self.auth = AuthService(engine, settings, context)
         self.books: dict[str, BookRead] = {}
-        self.evidence: dict[str, str] = {}
+        self.results: dict[str, dict[str, Any]] = {}
         self.trace: list[dict[str, str]] = []
 
     def execute(self, name: str, arguments: str) -> dict[str, Any]:
@@ -115,15 +135,17 @@ class ToolContext:
             with Session(self.engine) as db, db.begin():
                 user = self.auth.require_live(db, self.principal.user.id, self.principal.family_id)
                 authorize(user.role, Permission.READ_PERSONAL)
-                return self.run(db, name, data, ref)
+                result = self.run(db, name, data, ref)
         except AppError as error:
             if error.status in (401, 403):
                 raise
             self.trace[-1]["status"] = "unavailable"
-            self.evidence[ref] = "Сұралған деректер қазір қолжетімсіз. Кейінірек қайталаңыз."
-            return {"evidence_ref": ref, "error": "DATA_UNAVAILABLE"}
+            result = {"error": "DATA_UNAVAILABLE"}
+        result.update(evidence_ref=ref, tool=name)
+        self.results[ref] = result
+        return result
 
-    def book_result(self, books: list[BookRead], ref: str, summary: str) -> dict[str, Any]:
+    def book_rows(self, books: list[BookRead], ref: str, query: str = "") -> list[dict[str, Any]]:
         items = []
         for index, book in enumerate(books):
             key = f"{ref}_book{index + 1}"
@@ -133,14 +155,24 @@ class ToolContext:
                     "ref": key,
                     "id": str(book.id),
                     "title": book.title,
-                    "description": (book.description or "")[:1200],
+                    "description": excerpt(book.description, query) if book.description else None,
                     "authors": [author.full_name for author in book.authors],
+                    "categories": [category.name for category in book.categories],
+                    "publication_year": book.publication_year,
+                    "isbn": book.isbn,
                     "language": book.language,
+                    "total_copies": book.total_copies,
                     "available_copies": book.available_copies,
+                    "shelf_locations": book.shelf_locations,
                 }
             )
-        self.evidence[ref] = summary
-        return {"evidence_ref": ref, "summary": summary, "books": items}
+        return items
+
+    def recommendation_result(self, result: RecommendationPage, ref: str) -> dict[str, Any]:
+        books = self.book_rows([item.book for item in result.items], ref)
+        for book, item in zip(books, result.items, strict=True):
+            book["reason"] = item.reason
+        return {"books": books, "indexing_pending": result.indexing_pending}
 
     def run(self, db: Session, name: str, data: BaseModel, ref: str) -> dict[str, Any]:
         if isinstance(data, SearchInput):
@@ -156,85 +188,56 @@ class ToolContext:
                 self.principal,
                 self.settings,
             )
-            summary = (
-                f"Қордан {result.total} кітап табылды. "
-                f"Алғашқы {len(result.items)} нәтиже көрсетілді."
-                if result.total
-                else "Сұрауыңызға сәйкес кітап кітапхана қорынан табылмады."
-            )
-            if result.indexing_pending:
-                summary += " Кейбір кітаптардың мағыналық индексі әлі дайын емес."
-            return self.book_result(result.items, ref, summary)
+            return {
+                "q": data.q,
+                "total": result.total,
+                "indexing_pending": result.indexing_pending,
+                "books": self.book_rows(result.items, ref, data.q),
+            }
         if isinstance(data, BookInput):
             try:
                 identity = UUID(data.book_id)
             except ValueError:
                 raise unavailable() from None
             if name == "get_similar_books":
-                result_rec = similar(db, self.settings, identity, 8)
-                return self.book_result(
-                    [item.book for item in result_rec.items],
-                    ref,
-                    "Мазмұны ұқсас кітаптар."
-                    if result_rec.items
-                    else "Ұқсас кітаптар үшін дерек жеткіліксіз.",
-                )
+                return self.recommendation_result(similar(db, self.settings, identity, 8), ref)
             book = get_book(db, identity)
-            return self.book_result(
-                [book], ref, f"«{book.title}»: қазір {book.available_copies} дана қолжетімді."
-            )
+            return {"books": self.book_rows([book], ref)}
         if name == "get_recommendations":
             recommendations = personalized(db, self.settings, self.principal.user.id, 8)
-            return self.book_result(
-                [item.book for item in recommendations.items],
-                ref,
-                "Қызығушылықтарыңыз бен кітапхана қорына негізделген ұсыныстар.",
-            )
+            return self.recommendation_result(recommendations, ref)
         if isinstance(data, PersonalInput):
-            lines = []
             if name == "get_my_borrowings":
                 loans = borrowing_page(
                     db, data.page, 10, user_id=self.principal.user.id, active=True
                 )
-                for loan in loans.items:
-                    date = loan.due_at.astimezone(
-                        ZoneInfo(self.settings.library_timezone)
-                    ).strftime("%d.%m.%Y %H:%M %Z")
-                    lines.append(
-                        f"«{loan.book_title}»: қайтару мерзімі {date}."
-                        + (" Мерзімі өткен." if loan.is_overdue else "")
-                    )
-                summary = f"Қолыңыздағы кітаптар: {loans.total}. Бет: {data.page}."
-            else:
-                reservations = owned_page(db, self.principal.user.id, data.page, 10, None, True)
-                for reservation in reservations.items:
-                    state = (
-                        "алуға дайын"
-                        if reservation.qr_available
-                        else "кезекте"
-                        if reservation.status.value == "WAITING"
-                        else "алу мерзімі аяқталған"
-                    )
-                    lines.append(
-                        f"«{reservation.book_title}»: {state}."
-                        + (
-                            f" Кезектегі орын: {reservation.queue_position}."
-                            if reservation.queue_position
-                            else ""
-                        )
-                    )
-                summary = f"Белсенді броньдарыңыз: {reservations.total}. Бет: {data.page}."
-            self.evidence[ref] = summary + "\n" + "\n".join(lines)
-            return {"evidence_ref": ref, "summary": self.evidence[ref]}
-        policy = circulation_policy(db)
-        summary = (
-            f"Кітап алу мерзімі: {policy.borrow_period_days} күн. "
-            f"Бір мезетте: {policy.max_books_per_user} кітап. "
-            f"Дайын бронь: {policy.reservation_hold_hours} сағат сақталады. "
-            f"Ескерту: қайтаруға {policy.return_reminder_days} күн қалғанда. "
-            "Мерзімі өткен кітап болса, жаңа кітап алуға шектеу: "
-            f"{'бар' if policy.block_borrowing_if_overdue else 'жоқ'}; "
-            f"броньдауға шектеу: {'бар' if policy.block_reservation_if_overdue else 'жоқ'}."
-        )
-        self.evidence[ref] = summary
-        return {"evidence_ref": ref, "rules": asdict(policy), "summary": summary}
+                zone = ZoneInfo(self.settings.library_timezone)
+                return {
+                    "total": loans.total,
+                    "page": data.page,
+                    "loans": [
+                        {
+                            "title": loan.book_title,
+                            "due_at": loan.due_at.astimezone(zone).strftime("%d.%m.%Y %H:%M %Z"),
+                            "overdue": loan.is_overdue,
+                        }
+                        for loan in loans.items
+                    ],
+                }
+            reservations = owned_page(db, self.principal.user.id, data.page, 10, None, True)
+            entries = []
+            for reservation in reservations.items:
+                state = "expired"
+                if reservation.qr_available:
+                    state = "ready"
+                elif reservation.status.value == "WAITING":
+                    state = "waiting"
+                entries.append(
+                    {
+                        "title": reservation.book_title,
+                        "state": state,
+                        "queue_position": reservation.queue_position,
+                    }
+                )
+            return {"total": reservations.total, "page": data.page, "reservations": entries}
+        return {"rules": asdict(circulation_policy(db))}

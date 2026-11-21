@@ -1,5 +1,7 @@
 "use client";
 import Link from "next/link";
+import { BrandMark } from "@/components/ui/brand-mark";
+import styles from "./account.module.css";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { kk } from "@/locales/kk";
@@ -17,8 +19,9 @@ export function AccountSummary() {
     ADMIN: kk.auth.admin,
   };
   return (
-    <main className="mx-auto max-w-4xl px-6 py-14">
+    <main className={styles.account}>
       <Link href="/" className="text-primary">
+        <BrandMark />
         {kk.name}
       </Link>
       <p className="mt-12 text-sm text-muted-foreground">{kk.auth.dashboard}</p>

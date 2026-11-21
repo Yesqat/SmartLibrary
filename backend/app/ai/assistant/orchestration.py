@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from app.ai.assistant.contracts import LLMClient, unavailable
-from app.ai.assistant.policy import REPLIES
+from app.ai.assistant.rendering import render
 from app.ai.assistant.tools import ToolContext, definitions
 from app.schemas.catalog import BookRead
 
@@ -51,8 +51,12 @@ def respond(client: LLMClient, context: ToolContext, history: list[dict[str, Any
         plan = reply.answer
         if plan is None:
             raise unavailable()
-        if any(ref not in context.books for ref in plan.book_refs) or any(
-            ref not in context.evidence for ref in plan.evidence_refs
+        # A provider may select the public UUID used by the detail tool instead of
+        # its presentation reference. Both must resolve to a book read in this turn.
+        current_ids = {str(book.id): ref for ref, book in context.books.items()}
+        selected = [current_ids.get(ref, ref) for ref in plan.book_refs]
+        if any(ref not in context.books for ref in selected) or any(
+            ref not in context.results for ref in plan.evidence_refs
         ):
             raise unavailable()
         if plan.kind == "results":
@@ -60,12 +64,6 @@ def respond(client: LLMClient, context: ToolContext, history: list[dict[str, Any
                 raise unavailable()
         elif plan.book_refs or plan.evidence_refs:
             raise unavailable()
-        books = list({context.books[key].id: context.books[key] for key in plan.book_refs}.values())
-        content = "\n\n".join(
-            [
-                REPLIES[plan.kind],
-                *[context.evidence[key] for key in dict.fromkeys(plan.evidence_refs)],
-            ]
-        )
+        content, books = render(plan.model_copy(update={"book_refs": selected}), context)
         return Answer(content, books, plan.kind, input_tokens, output_tokens)
     raise unavailable()

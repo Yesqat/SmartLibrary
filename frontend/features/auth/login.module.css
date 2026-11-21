@@ -1,452 +1,642 @@
 .login {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(2rem, 7vw, 7rem);
+  align-items: center;
+  width: min(100%, 88rem);
+  min-height: 100svh;
+  margin-inline: auto;
+  padding: clamp(1rem, 3vw, 3rem);
+  color: var(--foreground);
+}
+.intro {
   position: relative;
   isolation: isolate;
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-  align-items: start;
-  column-gap: clamp(48px, 6vw, 105px);
-  min-height: 100svh;
   overflow: hidden;
-  padding: 68px 14.2% 40px 8.5%;
-  background: #f8f9f3;
-  color: #083c35;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(2.75rem, 6vh, 5rem);
+  min-height: min(46rem, 90svh);
+  align-self: stretch;
+  padding: clamp(1.75rem, 4vw, 4rem);
+  border-radius: 1.65rem;
+  color: #fff;
+  background:
+    radial-gradient(ellipse at 80% 104%, #4759b3 0%, transparent 55%), #17233a;
 }
-
-.login::before,
-.login::after {
+.intro::after {
   position: absolute;
   z-index: -1;
   content: "";
-  pointer-events: none;
-  border-radius: 50%;
+  inset: 0;
+  background-image:
+    linear-gradient(90deg, #9fb1fb0e 1px, transparent 1px),
+    linear-gradient(#9fb1fb0e 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(to top, black, transparent 95%);
 }
-
-.login::before {
-  top: -250px;
-  right: -165px;
-  width: 600px;
-  height: 425px;
-  background: linear-gradient(125deg, #d9e9e2, #b5d3c9);
-  transform: rotate(15deg);
+.brand {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  gap: 0.7rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.05em;
 }
-
-.login::after {
-  bottom: -250px;
-  right: -320px;
-  width: 500px;
-  height: 620px;
-  background: linear-gradient(140deg, #e5efe6, #eff4ed);
-  box-shadow: -2050px -535px 0 20px #d3e7dc;
-  transform: rotate(28deg);
+.brand svg {
+  width: 2.25rem;
+  height: 2.25rem;
 }
-
-.intro {
+.introCopy {
+  margin-block: auto 0;
+}
+.introCopy h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  max-width: 11ch;
+  font-size: clamp(2.4rem, 4.8vw, 4.75rem);
+  line-height: 1.02;
+  letter-spacing: -0.056em;
+  font-weight: 500;
+  text-wrap: balance;
+}
+.introCopy h1::before {
+  content: "";
+  display: block;
+  width: 2rem;
+  height: 0.2rem;
+  margin-bottom: 1.25rem;
+  background: #ff896e;
+}
+.introCopy p {
+  max-width: 32ch;
+  margin-top: 1rem;
+  color: #d2d9ef;
+  line-height: 1.55;
+}
+.card {
+  width: min(100%, 29rem);
+  justify-self: start;
+  padding-block: 1.25rem;
   min-width: 0;
 }
-
-.intro > a {
-  display: inline-flex;
-  align-items: center;
-  gap: 20px;
-  border-radius: 4px;
-  color: #134d44;
-  font-size: 28px;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-}
-
-.intro > a svg {
-  width: 48px;
-  height: 44px;
-  fill: #28656a;
-  stroke: #f3f8ef;
-  stroke-width: 1.25;
-  filter: drop-shadow(1px 1px 0 #175157);
-}
-
-.eyebrow {
-  margin-top: 72px;
-  color: #568378;
-  font-size: 17px;
-  font-weight: 500;
-  letter-spacing: 5px;
-}
-
-.intro h1 {
-  margin-top: 17px;
-  font-size: clamp(40px, 4.1vw, 72px);
-  font-weight: 700;
-  letter-spacing: -1.8px;
-  line-height: 1.13;
-}
-
-.intro h1 + p {
-  max-width: 480px;
-  margin-top: 16px;
-  font-size: 23px;
-  line-height: 1.45;
-  color: #49786b;
-}
-
-.intro h1 + p::after {
-  display: block;
-  width: 48px;
-  height: 4px;
-  margin-top: 21px;
-  border-radius: 4px;
-  background: #70a692;
-  content: "";
-}
-
-.illustration {
-  position: relative;
-  width: calc(100% + 130px);
-  max-width: 740px;
-  margin-top: -16px;
-  margin-left: -110px;
-}
-
-.illustration::before {
-  position: absolute;
-  z-index: -1;
-  inset: 2% 0 10% 28%;
-  border-radius: 48% 52% 42% 58% / 45% 58% 42% 55%;
-  background: linear-gradient(135deg, #e0eee6, #c3dfd1);
-  box-shadow: -138px 93px 0 -68px #d6e9de;
-  content: "";
-}
-
-.illustration img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.card {
-  width: 100%;
-  max-width: 596px;
-  margin-top: 109px;
-  border: 1px solid #fff;
-  border-radius: 27px;
-  padding: 41px 46px 32px;
-  background: #ffffffed;
-  box-shadow: 0 24px 65px #376b5012;
-}
-
-.cardHeading {
-  margin-bottom: 30px;
-  text-align: center;
-}
-
 .cardHeading h2 {
-  font-size: 36px;
-  font-weight: 700;
-  letter-spacing: -1px;
-  line-height: 1.25;
+  margin-bottom: 1.75rem;
+  font-size: clamp(2rem, 3.3vw, 3rem);
+  font-weight: 680;
+  line-height: 1.08;
+  letter-spacing: -0.055em;
 }
-
-.cardHeading p {
-  margin-top: 9px;
-  color: #527d75;
-  font-size: 18px;
-  line-height: 1.5;
-}
-
 .card form {
   display: grid;
-  gap: 22px;
+  gap: 1.15rem;
 }
-
 .card form > * {
   margin-block: 0;
 }
-
 .card label {
   position: relative;
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 1.4;
+  min-width: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
-
 .card label > svg {
   position: absolute;
-  bottom: 12px;
-  left: 14px;
-  width: 32px;
-  height: 32px;
-  padding: 5px;
-  border-radius: 50%;
-  background: #f0f7f3;
-  color: #2b6c70;
+  left: 0.95rem;
+  bottom: 0.95rem;
+  width: 1.15rem;
+  height: 1.15rem;
   pointer-events: none;
+  color: #596a83;
 }
-
 .card input {
+  width: 100%;
   min-width: 0;
-  height: 56px;
-  margin-top: 8px;
-  border: 1px solid #b4d1c7;
-  border-radius: 12px;
-  padding: 12px 16px 12px 61px;
+  height: 3.05rem;
+  margin-top: 0.45rem;
+  border: 1px solid #c5cbd5;
+  border-radius: 0.75rem;
+  padding: 0.625rem 1rem 0.625rem 2.85rem;
   background: #fff;
-  color: #163d36;
-  font-size: 18px;
-  font-weight: 400;
-  box-shadow: inset 0 1px 2px #254c3603;
+  color: var(--foreground);
+  font-size: 1rem;
+  font-weight: 450;
+  transition:
+    border-color 0.18s,
+    box-shadow 0.18s;
 }
-
+.card label:focus-within > svg {
+  color: var(--primary);
+}
 .card input:focus-visible {
-  border-color: #3c816a;
-  outline: 2px solid #3c816a;
-  outline-offset: 3px;
-  box-shadow: none;
+  border-color: var(--primary);
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }
-
-.card button[type="submit"] {
-  min-height: 62px;
-  border: 1px solid #245c4a;
-  border-radius: 12px;
-  background: #285f4e;
-  color: #fff;
-  font-size: 20px;
-  font-weight: 600;
-  gap: 12px;
-  box-shadow: inset 0 1px 0 #ffffff1a;
-  transition: background-color 160ms ease;
+.card input::placeholder {
+  color: #687387;
 }
-
-.card button[type="submit"]:hover {
-  background: #1c4c3d;
+.card [id="password-hint"] {
+  margin-block: -0.6rem 0.1rem;
+  color: #576377;
+  font-size: 0.85rem;
+  line-height: 1.5;
 }
-
-.card button[type="submit"] svg {
-  width: 22px;
-  height: 22px;
+.card button[type="submit"],
+.card form > p > a {
+  min-height: 3rem;
+  border-radius: 0.75rem;
+  font-weight: 650;
 }
-
 .divider {
   display: flex;
   align-items: center;
-  gap: 20px;
-  color: #507c74;
-  font-size: 16px;
+  gap: 0.85rem;
+  color: #58677a;
+  font-size: 0.875rem;
 }
-
-.divider::before,
-.divider::after {
+.divider::after,
+.divider::before {
   flex: 1;
   height: 1px;
-  background: #c3d9cf;
   content: "";
+  background: var(--border);
 }
-
 .card form > p > a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 54px;
-  padding: 10px 16px;
-  border: 1px solid #b8d3c7;
-  border-radius: 12px;
-  background: #f1f6ee;
-  color: #285e51;
-  font-size: 18px;
-  transition: background-color 160ms ease;
+  display: grid;
+  place-items: center;
+  border: 1px solid #bfc9dc;
+  background: #fff;
+  color: var(--primary);
+  font-size: 1rem;
+  text-decoration: none;
+  transition:
+    background 0.18s,
+    border-color 0.18s;
 }
-
 .card form > p > a:hover {
-  background: #e4efe2;
+  background: #eff2ff;
+  border-color: var(--primary);
 }
-
-.card [role="alert"] {
-  border: 1px solid #edc8bf;
-  background: #fff3ee;
-  color: #9c3729;
-  font-size: 15px;
-  line-height: 1.5;
+.card [role="status"] {
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #c5d9ce;
+  background: #eef7f1;
+  color: #21563d;
 }
-
-.card > [role="status"] {
-  border: 1px solid #c4dacb;
-  background: #edf5eb;
-  color: #2b624c;
-}
-
-.quote {
-  position: absolute;
-  top: 58px;
-  right: 2.85%;
-  width: 160px;
-  padding: 28px;
-  border-radius: 24px;
-  background: #f5faf2b3;
-  color: #4b806c;
-  box-shadow: 0 18px 35px #6084720a;
-}
-
-.quote svg {
-  width: 42px;
-  height: 42px;
-  margin-bottom: 18px;
-  fill: #8ebaa1;
-  stroke-width: 1.2;
-}
-
-.quote p {
-  font-size: 20px;
-  line-height: 1.35;
-}
-
-.quote p::after {
-  display: block;
-  width: 35px;
-  height: 3px;
-  margin-top: 16px;
-  background: #619a80;
-  content: "";
-}
-
-@media (max-width: 1599px) {
-  .login {
-    padding-right: 6%;
-    padding-left: 6%;
-    column-gap: 6%;
-  }
-
-  .quote {
-    display: none;
-  }
-
-  .illustration {
-    margin-left: -70px;
-    width: calc(100% + 80px);
-  }
-}
-
-@media (max-width: 1099px) {
-  .login {
-    padding: 36px 32px 40px;
-    gap: 36px;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  }
-
-  .intro > a {
-    font-size: 24px;
-    gap: 12px;
-  }
-
-  .intro > a svg {
-    width: 38px;
-  }
-
-  .eyebrow {
-    margin-top: 64px;
-    font-size: 14px;
-    letter-spacing: 3px;
-  }
-
-  .intro h1 {
-    font-size: 44px;
-    letter-spacing: -1px;
-  }
-
-  .intro h1 + p {
-    font-size: 19px;
-  }
-
-  .illustration {
-    width: calc(100% + 45px);
-    margin-left: -35px;
-    margin-top: 30px;
-  }
-
-  .card {
-    margin-top: 105px;
-    padding: 32px 24px;
-    border-radius: 24px;
-  }
-
-  .cardHeading h2 {
-    font-size: 30px;
-  }
-
-  .cardHeading p,
-  .card label,
-  .card input {
-    font-size: 16px;
-  }
-}
-
-@media (max-width: 767px) {
+@media (max-width: 47.99rem) {
   .login {
     grid-template-columns: minmax(0, 1fr);
-    gap: 30px;
-    padding: 28px 22px 40px;
+    align-content: start;
+    gap: 1.25rem;
   }
-
-  .eyebrow {
-    margin-top: 32px;
-    font-size: 12px;
+  .intro {
+    min-height: unset;
+    gap: 2.5rem;
+    padding: 1.6rem;
+    border-radius: 1.2rem;
   }
-
-  .intro h1 {
-    margin-top: 12px;
-    font-size: clamp(34px, 7.5vw, 46px);
-  }
-
-  .intro h1 + p {
-    margin-top: 14px;
-    font-size: 17px;
-  }
-
-  .intro h1 + p::after {
-    margin-top: 18px;
-  }
-
-  .illustration,
-  .quote {
+  .intro > [aria-hidden="true"] {
     display: none;
   }
-
+  .introCopy h1 {
+    max-width: unset;
+  }
+  .introCopy p {
+    max-width: 40ch;
+  }
   .card {
-    max-width: 540px;
     justify-self: center;
-    margin-top: 0;
-    padding: 30px 24px;
-  }
-
-  .cardHeading {
-    margin-bottom: 27px;
-  }
-
-  .cardHeading h2 {
-    font-size: 30px;
-  }
-
-  .card button[type="submit"] {
-    min-height: 56px;
-    font-size: 18px;
-  }
-
-  .login::before {
-    top: -285px;
-    right: -295px;
+    padding: 1rem 0.35rem 2rem;
   }
 }
-
-@media (max-width: 374px) {
-  .login {
-    padding-inline: 16px;
-  }
-
+@media (prefers-reduced-motion: no-preference) {
   .card {
-    padding-inline: 18px;
+    animation: cardIn 0.45s ease-out;
+  }
+  @keyframes cardIn {
+    from {
+      transform: translateY(8px);
+      opacity: 0.25;
+    }
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .card button[type="submit"],
-  .card form > p > a {
-    transition: none;
+.welcome {
+  width: 100%;
+  grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
+  gap: clamp(1.2rem, 1.9vw, 2rem);
+  padding: clamp(1.25rem, 4.5vh, 4rem) max(3.15vw, calc((100% - 98rem) / 2));
+  background:
+    radial-gradient(ellipse at 8% 18%, #f4ebeb 0%, transparent 52%),
+    radial-gradient(ellipse at 90% 85%, #ece3e5 0%, transparent 56%), #f7f3f1;
+  color: #131e35;
+}
+.welcome .intro {
+  display: block;
+  align-self: center;
+  min-height: 0;
+  aspect-ratio: 1.2;
+  padding: 0;
+  container-type: inline-size;
+  border-radius: clamp(1.35rem, 2.1vw, 2.25rem);
+  background: #15223f url("/login/reading-room.webp") center / cover no-repeat;
+  box-shadow: 0 20px 45px -32px #27344875;
+}
+.welcome .intro::after {
+  content: none;
+}
+.welcome .brand,
+.welcome .introCopy {
+  position: absolute;
+  z-index: 3;
+  left: 8.4%;
+}
+.welcome .brand {
+  top: 5.8%;
+  gap: 0.6em;
+  font-size: clamp(1.25rem, 3.85cqw, 2.35rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+.welcome .brand svg {
+  width: 1.68em;
+  height: 1.68em;
+}
+.welcome .introCopy {
+  top: 18.9%;
+  width: 49%;
+  margin: 0;
+}
+.welcome .introCopy h1 {
+  max-width: 10.7ch;
+  color: #fffdf9;
+  font-size: 8.7cqw;
+  line-height: 0.94;
+}
+.welcome .introCopy h1::before {
+  width: 6.2cqw;
+  height: max(3px, 0.56cqw);
+  margin-bottom: 2.25cqw;
+  border-radius: 5px;
+  background: #ffa382;
+}
+.welcome .introCopy p {
+  max-width: 31cqw;
+  margin-top: 1.1cqw;
+  color: #f1f2fc;
+  font-size: clamp(0.9rem, 2.05cqw, 1.25rem);
+  line-height: 1.45;
+}
+.welcome .ticket {
+  position: absolute;
+  z-index: 1;
+  left: 8%;
+  bottom: 14.3%;
+  width: 41.5%;
+}
+.ticket > div {
+  padding: 0;
+}
+.ticket > div > div {
+  width: 100%;
+}
+.welcome .librarian {
+  display: block;
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  height: 89%;
+  pointer-events: none;
+}
+.welcome .card {
+  --form-blue: #2449e3;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  justify-self: stretch;
+  width: 100%;
+  aspect-ratio: 0.79;
+  padding: clamp(1.6rem, 3.3vw, 3.5rem) clamp(1.5rem, 2.65vw, 2.75rem);
+  border: 1px solid #ffffffd9;
+  border-radius: clamp(1.35rem, 2.1vw, 2.25rem);
+  background: #fffdfdfa;
+  box-shadow:
+    0 22px 52px -23px #44384540,
+    0 4px 13px #44384508;
+}
+.welcome .cardHeading h2 {
+  margin-bottom: clamp(1.65rem, 3vw, 3.1rem);
+  color: #101b32;
+  font-size: clamp(2rem, 3.2vw, 3.4rem);
+}
+.welcome .card form {
+  flex: 1;
+  align-content: space-between;
+  gap: clamp(1.1rem, 1.7vw, 1.8rem);
+}
+.welcome .card label {
+  font-size: clamp(0.92rem, 1.12vw, 1.1rem);
+}
+.welcome .card input {
+  height: clamp(3.2rem, 3.75vw, 3.8rem);
+  border-color: #c5cfe6;
+  background: #f3f7ff;
+  color: #19263f;
+}
+.welcome .card label > svg {
+  bottom: clamp(1rem, 1.23vw, 1.3rem);
+  color: #5b6d91;
+}
+.welcome .card input:focus-visible {
+  border-color: var(--form-blue);
+  outline: 0;
+  box-shadow: 0 0 0 3px #2449e324;
+}
+.passwordField {
+  position: relative;
+}
+.welcome .passwordField input {
+  padding-right: 3.25rem;
+}
+.visibility {
+  position: absolute;
+  right: 0.25rem;
+  bottom: 0;
+  display: grid;
+  place-items: center;
+  width: 2.9rem;
+  height: clamp(3.2rem, 3.75vw, 3.8rem);
+  border-radius: 0.65rem;
+  color: #627393;
+  cursor: pointer;
+}
+.visibility:hover {
+  color: var(--form-blue);
+}
+.visibility:focus-visible {
+  outline: 2px solid var(--form-blue);
+  outline-offset: -5px;
+}
+.visibility svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+.welcome .card button[type="submit"],
+.welcome .card form > p > a {
+  min-height: clamp(3.3rem, 3.95vw, 4rem);
+  border-radius: 0.85rem;
+  font-size: clamp(1rem, 1.3vw, 1.25rem);
+}
+.welcome .card button[type="submit"] {
+  margin-top: 0.35rem;
+  background-color: var(--form-blue);
+  box-shadow: 0 4px 10px #2347d91a;
+}
+.welcome .card button[type="submit"]:hover:enabled {
+  background-color: #193bcb;
+}
+.welcome .card form > p > a {
+  border-color: #bdcbea;
+  color: var(--form-blue);
+}
+
+@media (max-width: 51rem) {
+  .welcome {
+    grid-template-columns: minmax(0, 1fr);
+    align-content: center;
+    justify-items: center;
+    gap: 1rem;
+    padding: clamp(0.8rem, 3.3vw, 1.6rem);
+  }
+  .welcome .intro,
+  .welcome .card {
+    width: min(100%, 36rem);
+    justify-self: center;
+  }
+  .welcome .intro {
+    aspect-ratio: 1.85;
+    min-height: 11.9rem;
+  }
+  .welcome .brand,
+  .welcome .introCopy {
+    left: 5.5%;
+  }
+  .welcome .brand {
+    top: 8%;
+    font-size: clamp(1.05rem, 4cqw, 1.4rem);
+  }
+  .welcome .introCopy {
+    top: 33%;
+    width: 52%;
+  }
+  .welcome .introCopy h1 {
+    font-size: 7.35cqw;
+    line-height: 1;
+  }
+  .welcome .introCopy h1::before {
+    width: 1.7rem;
+    height: 3px;
+    margin-bottom: 1.9cqw;
+  }
+  .welcome .introCopy p {
+    max-width: 48cqw;
+    margin-top: 1.6cqw;
+    font-size: clamp(0.75rem, 2.7cqw, 0.94rem);
+  }
+  .welcome .ticket {
+    display: none;
+  }
+  .welcome .librarian {
+    height: 95%;
+  }
+  .welcome .card {
+    aspect-ratio: auto;
+    padding: clamp(1.3rem, 4vw, 2rem);
+  }
+  .welcome .cardHeading h2 {
+    margin-bottom: 1.3rem;
+  }
+  .welcome .card form {
+    gap: 1rem;
+  }
+}
+
+.enrollment {
+  grid-template-columns: minmax(0, 1.51fr) minmax(0, 1fr);
+  align-content: center;
+  gap: clamp(1rem, 1.4vw, 1.5rem);
+  padding: clamp(1.25rem, 4.1vh, 2.5rem) max(3.6vw, calc((100% - 97rem) / 2));
+  background:
+    radial-gradient(ellipse at 89% 65%, #eeebf6 0%, transparent 61%), #faf8fa;
+}
+.enrollment .intro {
+  aspect-ratio: 1.07;
+  background-color: #192b51;
+  background-image: url("/register/reading-room.webp");
+}
+.enrollment .intro::before {
+  content: "";
+  position: absolute;
+  width: 77%;
+  aspect-ratio: 1;
+  left: 29%;
+  top: 44%;
+  border: 1px solid #8faafa2b;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #6587ef21, transparent 62%);
+}
+.enrollment .brand,
+.enrollment .introCopy {
+  left: 6.7%;
+}
+.enrollment .brand {
+  top: 5.6%;
+  font-size: clamp(1.25rem, 3.35cqw, 2rem);
+}
+.enrollment .introCopy {
+  top: 16.5%;
+  width: 40%;
+}
+.enrollment .introCopy h1 {
+  max-width: 9.5ch;
+  font-size: 8.65cqw;
+  line-height: 0.94;
+}
+.enrollment .introCopy h1::before {
+  width: 5.65cqw;
+  margin-bottom: 2.45cqw;
+  background: #ff946f;
+}
+.enrollment .introCopy p {
+  max-width: 37.5cqw;
+  margin-top: 2.1cqw;
+  font-size: clamp(0.9rem, 2.18cqw, 1.3rem);
+  line-height: 1.42;
+}
+.enrollment .ticket {
+  --ticket-wordmark-size: clamp(1rem, 5.9cqi, 1.35rem);
+  --ticket-caption-size: clamp(0.875rem, 4.1cqi, 1rem);
+  left: 5.5%;
+  bottom: 10.4%;
+  width: 36.5%;
+}
+.enrollment .librarian {
+  right: 1.4%;
+  height: 85.56%;
+}
+.enrollment .card {
+  aspect-ratio: 0.707;
+  padding: clamp(1.5rem, 1.5vw, 1.65rem) clamp(1.5rem, 3.1vw, 3.3rem)
+    clamp(1.7rem, 3.35vw, 3.6rem);
+  box-shadow: 0 14px 44px -14px #3c476c30;
+}
+.enrollment .cardHeading h2 {
+  margin-bottom: clamp(1.2rem, 1.65vw, 1.8rem);
+  font-size: clamp(2rem, 3.15vw, 3.35rem);
+}
+.enrollment .card form {
+  gap: clamp(0.8rem, 0.97vw, 1.05rem);
+}
+.names {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.75rem, 1.25vw, 1.35rem);
+}
+.enrollment .card label {
+  font-size: clamp(0.875rem, 0.99vw, 1rem);
+}
+.enrollment .card input {
+  height: clamp(2.8rem, 3vw, 3.15rem);
+  margin-top: 0.35rem;
+  padding-left: 3.2rem;
+  background: #fff;
+  border-color: #bfcbe3;
+  font-size: clamp(1rem, 1.04vw, 1.1rem);
+}
+.enrollment .card label > svg {
+  bottom: clamp(0.78rem, 0.91vw, 1rem);
+  left: 1.1rem;
+}
+.enrollment .card [id="password-hint"] {
+  margin-top: -0.55rem;
+  margin-bottom: 0;
+  font-size: clamp(0.875rem, 0.92vw, 0.96rem);
+  line-height: 1.4;
+}
+.enrollment .divider {
+  font-size: 1rem;
+}
+.enrollment .card button[type="submit"],
+.enrollment .card form > p > a {
+  min-height: clamp(2.875rem, 3.05vw, 3.2rem);
+  border-radius: 0.8rem;
+}
+.enrollment .card button[type="submit"] {
+  margin-top: 0.25rem;
+}
+@media (max-width: 60rem) {
+  .enrollment {
+    grid-template-columns: minmax(0, 1fr);
+    padding: clamp(0.8rem, 3.3vw, 1.6rem);
+  }
+  .enrollment .intro,
+  .enrollment .card {
+    width: min(100%, 36rem);
+    justify-self: center;
+  }
+  .enrollment .ticket {
+    display: none;
+  }
+  .enrollment .intro {
+    aspect-ratio: 1.65;
+    min-height: 15.5rem;
+  }
+  .enrollment .brand,
+  .enrollment .introCopy {
+    left: 5.5%;
+  }
+  .enrollment .brand {
+    top: 7%;
+    font-size: clamp(1.05rem, 4cqw, 1.4rem);
+  }
+  .enrollment .introCopy {
+    top: 26%;
+    width: 51%;
+  }
+  .enrollment .introCopy h1 {
+    font-size: clamp(1.45rem, 6.6cqw, 2.45rem);
+    line-height: 0.98;
+  }
+  .enrollment .introCopy h1::before {
+    width: 1.7rem;
+    margin-bottom: 2cqw;
+  }
+  .enrollment .introCopy p {
+    max-width: 50cqw;
+    margin-top: 2cqw;
+    font-size: clamp(0.75rem, 2.7cqw, 0.94rem);
+    line-height: 1.35;
+  }
+  .enrollment .librarian {
+    right: 0;
+    height: 82%;
+  }
+  .enrollment .card {
+    aspect-ratio: auto;
+    padding: clamp(1.3rem, 4vw, 2rem);
+  }
+  .enrollment .card form {
+    gap: 1rem;
+  }
+}
+@media (max-width: 30rem) {
+  .names {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
   }
 }

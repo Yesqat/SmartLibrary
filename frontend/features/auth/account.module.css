@@ -1,0 +1,65 @@
+.account {
+  width: min(90%, 54rem);
+  margin: 0 auto;
+  padding-block: clamp(2rem, 5vw, 4rem);
+  color: var(--foreground);
+  overflow-wrap: anywhere;
+}
+.account > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.65rem;
+  color: var(--primary);
+  font-size: 0.94rem;
+  font-weight: 650;
+  text-underline-offset: 0.22em;
+}
+.account > h1 {
+  margin-top: 1.25rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 500;
+  font-size: clamp(2.25rem, 5vw, 3.8rem);
+  letter-spacing: -0.04em;
+  line-height: 1.12;
+}
+.account > section {
+  margin-top: 1.5rem;
+  padding: clamp(1.15rem, 3vw, 2rem);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: #fff;
+}
+.account section h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  letter-spacing: -0.03em;
+}
+.account h2 > svg {
+  width: 1.35rem;
+  height: 1.35rem;
+  flex-shrink: 0;
+  color: var(--primary);
+}
+.account label {
+  color: #3b4962;
+  font-size: 0.925rem;
+  font-weight: 600;
+}
+.account label input {
+  font-size: 1rem;
+  font-weight: 400;
+  background: white;
+}
+.account section li {
+  border: 1px solid #d7dfed;
+  background: #f4f6fc;
+}
+.account dt {
+  color: #5c697d;
+}
+.account dd {
+  margin-top: 0.3rem;
+  font-weight: 600;
+}

@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { KeyRound, MonitorSmartphone } from "lucide-react";
+import styles from "./account.module.css";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useState, type FormEvent } from "react";
@@ -61,7 +63,7 @@ export function SecurityPanel() {
       timeZone: "UTC",
     }).format(new Date(value)) + " UTC";
   return (
-    <main className="mx-auto max-w-3xl px-6 py-12">
+    <main className={styles.account}>
       <Link
         className="text-primary underline"
         href={user ? homeForRole(user.role) : "/login"}
@@ -73,7 +75,10 @@ export function SecurityPanel() {
         {kk.auth.securityDescription}
       </p>
       <section className="mt-8 rounded-2xl border border-border p-6">
-        <h2 className="text-xl font-semibold">{kk.auth.passwordChange}</h2>
+        <h2 className="text-xl font-semibold">
+          <KeyRound aria-hidden="true" />
+          {kk.auth.passwordChange}
+        </h2>
         <p className="mt-2 text-sm text-muted-foreground">
           {kk.auth.passwordWarning}
         </p>
@@ -139,7 +144,10 @@ export function SecurityPanel() {
         </p>
       )}
       <section className="mt-8 rounded-2xl border border-border p-6">
-        <h2 className="text-xl font-semibold">{kk.auth.sessions}</h2>
+        <h2 className="text-xl font-semibold">
+          <MonitorSmartphone aria-hidden="true" />
+          {kk.auth.sessions}
+        </h2>
         {sessions.isPending && (
           <p role="status" className="mt-4">
             {kk.auth.loading}

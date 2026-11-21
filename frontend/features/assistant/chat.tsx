@@ -1,7 +1,7 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { BookOpen, Bot, LoaderCircle, Send, Sparkles } from "lucide-react";
+import { BookOpen, LoaderCircle, MessagesSquare, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Failure, Pager, inputClass } from "@/features/catalog/shared";
 import { ApiError } from "@/services/api-client";
@@ -15,21 +15,39 @@ export function ChatEmptyState() {
     <div className={styles.emptyState}>
       <div className={styles.emptyIcon} aria-hidden="true">
         <BookOpen />
-        <Sparkles />
       </div>
       <h3>Сұрағыңызды жазыңыз</h3>
-      <p>
-        Кітаптар, авторлар, жанрлар немесе кітапхана жайлы сұраңыз.
-        <br />
-        Мен көмектесуге дайынмын!
-      </p>
+      <p>Кітаптар, авторлар, жанрлар немесе кітапхана жайлы сұраңыз.</p>
     </div>
   );
 }
-export function Chat({ id }: { id: string }) {
+export function Chat({
+  id,
+  onTypingChange,
+}: {
+  id: string;
+  onTypingChange?: (typing: boolean) => void;
+}) {
   const [content, setContent] = useState("");
   const [page, setPage] = useState(1);
   const key = useRef<{ content: string; id: string } | null>(null);
+  const typingTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => {
+    return () => {
+      clearTimeout(typingTimeout.current);
+      onTypingChange?.(false);
+    };
+  }, [onTypingChange]);
+
+  function indicateTyping(typing: boolean) {
+    if (!onTypingChange) return;
+    clearTimeout(typingTimeout.current);
+    onTypingChange(typing);
+    if (typing) {
+      typingTimeout.current = setTimeout(() => onTypingChange(false), 1400);
+    }
+  }
+
   const cache = useQueryClient();
   const detail = useQuery({
     queryKey: ["assistant", id, page],
@@ -61,47 +79,59 @@ export function Chat({ id }: { id: string }) {
   });
   return (
     <section aria-label={t.title} className={styles.chatPanel}>
-      {detail.isPending ? (
-        <p role="status" className={styles.loading}>
-          {t.loading}
-        </p>
-      ) : detail.isError ? (
-        <Failure error={detail.error} retry={() => void detail.refetch()} />
-      ) : (
-        <>
-          <header className={styles.chatHeading}>
-            <span className={styles.botBadge}>
-              <Bot aria-hidden="true" />
-            </span>
-            <div>
-              <p>{t.empty}</p>
-              <h2>{detail.data.conversation.title || t.untitled}</h2>
-            </div>
-          </header>
-          {!detail.data.messages.total && <ChatEmptyState />}
-          <div className={styles.messageList}>
-            {detail.data.messages.items.map((message) => (
-              <div
-                key={message.id}
-                className={
-                  message.role === "USER"
-                    ? styles.userMessage
-                    : styles.assistantMessage
-                }
-              >
-                <MessageView message={message} />
-              </div>
-            ))}
+      {detail.isSuccess && (
+        <header className={styles.chatHeading}>
+          <span className={styles.botBadge}>
+            <MessagesSquare aria-hidden="true" />
+          </span>
+          <div>
+            <h2>{detail.data.conversation.title || t.untitled}</h2>
+            <p>{t.empty}</p>
           </div>
-          {detail.data.messages.pages > 1 && (
-            <Pager
-              page={page}
-              pages={detail.data.messages.pages}
-              onChange={setPage}
-            />
-          )}
-        </>
+        </header>
       )}
+      <div
+        className={styles.transcript}
+        role="region"
+        aria-label="Хабарламалар"
+        tabIndex={0}
+      >
+        <div className={styles.transcriptBody}>
+          <p className={styles.snapshot}>{t.snapshot}</p>
+          {detail.isPending ? (
+            <p role="status" className={styles.loading}>
+              {t.loading}
+            </p>
+          ) : detail.isError ? (
+            <Failure error={detail.error} retry={() => void detail.refetch()} />
+          ) : (
+            <>
+              {detail.data.messages.pages > 1 && (
+                <Pager
+                  page={page}
+                  pages={detail.data.messages.pages}
+                  onChange={setPage}
+                />
+              )}
+              {!detail.data.messages.total && <ChatEmptyState />}
+              <div className={styles.messageList}>
+                {detail.data.messages.items.map((message) => (
+                  <div
+                    key={message.id}
+                    className={
+                      message.role === "USER"
+                        ? styles.userMessage
+                        : styles.assistantMessage
+                    }
+                  >
+                    <MessageView message={message} />
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
       {send.isPending && (
         <p role="status" aria-live="polite" className={styles.processing}>
           <LoaderCircle aria-hidden="true" />
@@ -109,8 +139,7 @@ export function Chat({ id }: { id: string }) {
         </p>
       )}
       {send.isError && <Failure error={send.error} />}
-      <div className={styles.composer}>
-        <p className={styles.snapshot}>{t.snapshot}</p>
+      <div className={styles.composer} onSubmit={() => indicateTyping(false)}>
         <div className={styles.starters}>
           {t.starters.map((starter) => (
             <Button
@@ -140,6 +169,8 @@ export function Chat({ id }: { id: string }) {
               required
               value={content}
               disabled={send.isPending}
+              onInput={() => indicateTyping(true)}
+              onBlur={() => indicateTyping(false)}
               onChange={(event) => setContent(event.target.value)}
             />
           </label>

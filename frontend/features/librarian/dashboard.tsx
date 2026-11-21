@@ -10,6 +10,7 @@ import { librarian as t } from "@/locales/librarian";
 import { reader as rt } from "@/locales/reader";
 import { kk } from "@/locales/kk";
 import { librarianApi } from "./api";
+import styles from "@/features/catalog/workspace.module.css";
 export function LibrarianDashboard() {
   const { user } = useAuth();
   const result = useQuery({
@@ -20,7 +21,7 @@ export function LibrarianDashboard() {
   const exit = useMutation({ mutationFn: logout });
   return (
     <CatalogShell title={t.dashboard}>
-      <section className="mb-6 rounded-xl border p-5">
+      <section className={styles.account}>
         <h2 className="text-lg font-semibold">{kk.auth.account}</h2>
         <p>
           {user?.first_name} {user?.last_name} · {user?.email}
@@ -58,7 +59,7 @@ export function LibrarianDashboard() {
           <p className="mb-4 text-sm">
             {t.timezone}: {result.data.timezone}
           </p>
-          <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          <dl className={styles.metrics}>
             {[
               [t.issued, result.data.issued_today],
               [t.returned, result.data.returned_today],
@@ -66,10 +67,7 @@ export function LibrarianDashboard() {
               [t.activeReservations, result.data.active_reservations],
               [t.overdue, result.data.overdue_borrowings],
             ].map(([label, value]) => (
-              <div
-                key={String(label)}
-                className="rounded-xl border bg-white p-5"
-              >
+              <div key={String(label)}>
                 <dt>{label}</dt>
                 <dd className="mt-2 text-3xl font-semibold">{value}</dd>
               </div>

@@ -47,6 +47,7 @@ class Settings(BaseSettings):
     llm_provider: str = ""
     llm_model: str = ""
     llm_api_key: SecretStr = SecretStr("")
+    groq_api_key: SecretStr = SecretStr("")
     embedding_model: str = ""
     embedding_model_revision: str = ""
 
@@ -120,6 +121,19 @@ class Settings(BaseSettings):
             if self.log_level == "DEBUG":
                 raise ValueError("Production debug logging is disabled")
         return self
+
+    @property
+    def assistant_provider(self) -> str:
+        provider = self.llm_provider.strip().lower()
+        if not provider and self.groq_api_key.get_secret_value().strip():
+            return "groq"
+        return provider if provider in {"openai", "groq"} else ""
+
+    @property
+    def assistant_model(self) -> str:
+        if self.assistant_provider == "groq":
+            return self.llm_model.strip() or "openai/gpt-oss-120b"
+        return self.llm_model.strip()
 
     @property
     def database_dsn(self) -> str:

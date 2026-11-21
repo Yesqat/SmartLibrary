@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  ArrowLeft,
+  CircleX,
   BookOpen,
   Bookmark,
   CalendarDays,
@@ -18,43 +18,9 @@ import { Button } from "@/components/ui/button";
 import { Cover } from "@/components/books/book-card";
 import { catalogApi } from "@/features/catalog/api";
 import { CatalogShell, Failure } from "@/features/catalog/shared";
-import libraryBooks from "@/features/reader/assets/profile-books.png";
 import { reservations as t } from "@/locales/reservations";
 import { reservationApi, type Reservation } from "./api";
 import styles from "./detail.module.css";
-
-function ReservationHero() {
-  return (
-    <div className={styles.hero}>
-      <div className={styles.intro}>
-        <Link className={styles.back} href="/reservations">
-          <ArrowLeft aria-hidden="true" />
-          {t.title}
-        </Link>
-        <p className={styles.title} aria-hidden="true">
-          {t.detail}
-        </p>
-        <p className={styles.subtitle}>
-          Сіздің бронь мәліметтері мен кітапты алу үшін қажет QR коды.
-        </p>
-      </div>
-      <div className={styles.artwork} aria-hidden="true">
-        <Image
-          src={libraryBooks}
-          alt=""
-          width={1536}
-          height={1024}
-          sizes="(max-width: 767px) 1px, 340px"
-        />
-        <div className={styles.motto}>
-          <BookOpen />
-          <p>Жақсы кітаптар әрқашан жақсы адамдарды табады.</p>
-          <span />
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function ReservationCover({ row }: { row: Reservation }) {
   // ReservationRead has no cover URL; reuse the existing catalog query/cache.
@@ -227,7 +193,12 @@ export function ReservationDetail({ id }: { id: string }) {
     <div className={styles.page}>
       <CatalogShell title={t.detail}>
         <div className={styles.content}>
-          <ReservationHero />
+          <div className={styles.intro}>
+            <p>Сіздің бронь мәліметтері мен кітапты алу үшін қажет QR коды.</p>
+            <Link className={styles.back} href="/reservations">
+              {t.title}
+            </Link>
+          </div>
           {result.isPending ? (
             <p role="status" className={styles.loading}>
               {t.loading}
@@ -277,7 +248,7 @@ export function ReservationDetail({ id }: { id: string }) {
                         if (window.confirm(t.confirm)) action.mutate();
                       }}
                     >
-                      <ArrowLeft aria-hidden="true" />
+                      <CircleX aria-hidden="true" />
                       {action.isPending ? t.loading : t.cancel}
                     </Button>
                   )}

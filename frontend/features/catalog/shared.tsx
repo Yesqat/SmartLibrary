@@ -1,6 +1,8 @@
 "use client";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { CircleAlert, RotateCw } from "lucide-react";
+import { BrandMark } from "@/components/ui/brand-mark";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/features/auth/auth-provider";
 import { catalog as t } from "@/locales/catalog";
@@ -8,15 +10,11 @@ import { kk } from "@/locales/kk";
 import { reader as rt } from "@/locales/reader";
 import { ApiError } from "@/services/api-client";
 import { AdminNavigation } from "@/features/admin/navigation";
-export const inputClass =
-  "w-full rounded-lg border bg-white px-3 py-2 text-foreground";
-export function CatalogShell({
-  title,
-  children,
-}: {
-  title: string;
-  children: ReactNode;
-}) {
+import styles from "./workspace.module.css";
+
+export const inputClass = styles.input;
+
+export function CatalogNavigation({ currentHref }: { currentHref?: string }) {
   const { user } = useAuth();
   const account =
     user?.role === "ADMIN"
@@ -25,58 +23,81 @@ export function CatalogShell({
         ? "/librarian"
         : "/dashboard";
   return (
-    <main className="mx-auto max-w-6xl px-5 py-10">
-      <nav
-        aria-label={t.title}
-        className="mb-10 flex flex-wrap gap-5 text-sm text-primary"
+    <nav aria-label={t.title} className={styles.navigation}>
+      <Link href="/" className={styles.brand}>
+        <BrandMark />
+        SmartLibrary
+      </Link>
+      <Link href="/catalog">{t.title}</Link>
+      {user?.role === "LIBRARIAN" && (
+        <Link href="/librarian/qr">Броньді тексеру</Link>
+      )}
+      {user?.role === "READER" && (
+        <>
+          <Link href="/reservations">{rt.reservations}</Link>
+          <Link href="/my-books">{rt.loans}</Link>
+          <Link href="/favorites">{rt.favorites}</Link>
+          <Link href="/notifications">{rt.notifications}</Link>
+          <Link
+            href="/assistant"
+            aria-current={currentHref === "/assistant" ? "page" : undefined}
+          >
+            AI кітапханашы
+          </Link>
+        </>
+      )}
+      <Link
+        className={styles.accountLink}
+        href={user ? account : "/login"}
+        aria-current={currentHref === account ? "page" : undefined}
       >
-        <Link href="/">SmartLibrary</Link>
-        <Link href="/catalog">{t.title}</Link>
-        {user?.role === "LIBRARIAN" && (
-          <Link href="/librarian/qr">Броньді тексеру</Link>
-        )}
-        {user?.role === "READER" && (
-          <>
-            <Link href="/reservations">{rt.reservations}</Link>
-            <Link href="/my-books">{rt.loans}</Link>
-            <Link href="/favorites">{rt.favorites}</Link>
-            <Link href="/notifications">{rt.notifications}</Link>
-            <Link href="/assistant">AI кітапханашы</Link>
-          </>
-        )}
-        <Link href={user ? account : "/login"}>
-          {user ? t.account : kk.auth.login}
-        </Link>
-        {user && <Link href="/account/profile">{rt.profile}</Link>}
-        {user && user.role !== "READER" && (
-          <>
-            <Link href={`${account}/books`}>{t.staff}</Link>
-            <Link href={`${account}/references`}>{t.references}</Link>
-            {user.role === "LIBRARIAN" && (
-              <>
-                <Link href="/librarian/issue">Кітап беру</Link>
-                <Link href="/librarian/return">Кітап қабылдау</Link>
-                <Link href="/librarian/readers">Оқырмандар</Link>
-                <Link href="/librarian/reservations">Броньдар</Link>
-                <Link href="/librarian/overdue">Мерзімі өткендер</Link>
-                <Link href="/librarian/category-predictions">
-                  Санат ұсыныстары
-                </Link>
-              </>
-            )}
-          </>
-        )}
-      </nav>
-      <h1 className="mb-8 text-3xl font-semibold">{title}</h1>
+        {user ? t.account : kk.auth.login}
+      </Link>
+      {user && <Link href="/account/profile">{rt.profile}</Link>}
+      {user && user.role !== "READER" && (
+        <>
+          {user.role === "LIBRARIAN" && (
+            <span aria-hidden="true" className={styles.navDivider} />
+          )}
+          <Link href={`${account}/books`}>{t.staff}</Link>
+          <Link href={`${account}/references`}>{t.references}</Link>
+          {user.role === "LIBRARIAN" && (
+            <>
+              <Link href="/librarian/issue">Кітап беру</Link>
+              <Link href="/librarian/return">Кітап қабылдау</Link>
+              <Link href="/librarian/readers">Оқырмандар</Link>
+              <Link href="/librarian/reservations">Броньдар</Link>
+              <Link href="/librarian/overdue">Мерзімі өткендер</Link>
+              <Link href="/librarian/category-predictions">
+                Санат ұсыныстары
+              </Link>
+            </>
+          )}
+        </>
+      )}
+    </nav>
+  );
+}
+
+export function CatalogShell({
+  title,
+  children,
+}: {
+  title: string;
+  children: ReactNode;
+}) {
+  const { user } = useAuth();
+  return (
+    <main className={styles.workspace}>
+      <CatalogNavigation />
+      <h1 className={styles.title}>{title}</h1>
       <div
-        className={
-          user?.role === "ADMIN"
-            ? "grid gap-7 xl:grid-cols-[190px_minmax(0,1fr)]"
-            : undefined
-        }
+        className={user?.role === "ADMIN" ? styles.adminLayout : styles.layout}
       >
         {user?.role === "ADMIN" && <AdminNavigation />}
-        <div className="min-w-0">{children}</div>
+        <div className={styles.content} data-role={user?.role}>
+          {children}
+        </div>
       </div>
     </main>
   );
@@ -89,13 +110,12 @@ export function Failure({
   retry?: () => void;
 }) {
   return (
-    <div
-      role="alert"
-      className="my-4 rounded-lg border border-red-300 bg-red-50 p-4 text-red-900"
-    >
+    <div role="alert" className={styles.failure}>
+      <CircleAlert aria-hidden="true" />
       <p>{error instanceof ApiError ? error.message : kk.error}</p>
       {retry && (
-        <Button variant="outline" className="mt-3" onClick={retry}>
+        <Button variant="outline" onClick={retry}>
+          <RotateCw aria-hidden="true" size={16} />
           {t.retry}
         </Button>
       )}
@@ -112,10 +132,7 @@ export function Pager({
   onChange: (value: number) => void;
 }) {
   return (
-    <nav
-      aria-label={t.page}
-      className="mt-8 flex items-center justify-center gap-4"
-    >
+    <nav aria-label={t.page} className={styles.pager}>
       <Button
         variant="outline"
         disabled={page <= 1}
@@ -144,7 +161,7 @@ export function Field({
   children: ReactNode;
 }) {
   return (
-    <label className="grid gap-2 text-sm font-medium">
+    <label className={styles.field}>
       {label}
       {children}
     </label>

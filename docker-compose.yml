@@ -2,7 +2,7 @@ name: smartlibrary
 
 x-backend: &backend
   image: smartlibrary-backend:local
-  environment:
+  environment: &backend-environment
     APP_ENV: ${APP_ENV:-development}
     FRONTEND_URL: ${FRONTEND_URL:-http://localhost:8080}
     CORS_ORIGINS: ${CORS_ORIGINS:-["http://localhost:8080"]}
@@ -117,6 +117,9 @@ services:
 
   backend:
     <<: *backend
+    environment:
+      <<: *backend-environment
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
     build:
       context: ./backend
       target: runtime

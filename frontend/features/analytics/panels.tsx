@@ -13,6 +13,7 @@ import {
   type Readers,
 } from "./api";
 import { DistributionChart, TrendChart } from "./charts";
+import styles from "@/features/catalog/workspace.module.css";
 type Metrics = Record<string, unknown>;
 function Cards({
   data,
@@ -22,9 +23,9 @@ function Cards({
   keys: (keyof typeof t.metrics)[];
 }) {
   return (
-    <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <dl className={styles.metrics}>
       {keys.map((key) => (
-        <div key={key} className="rounded-xl border bg-white p-5">
+        <div key={key}>
           <dt>{t.metrics[key]}</dt>
           <dd className="mt-2 text-2xl font-semibold">
             {typeof data[key] === "number"

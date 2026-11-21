@@ -98,7 +98,7 @@ PostgreSQL uses pg_isready, Redis authenticated PING, backend readiness actual S
 | AUTH_REGISTER_LIMIT | Default 10 registrations/IP/hour |
 | AUTH_REFRESH_LIMIT | Default 120 refreshes/IP/minute |
 | UPLOAD_DIRECTORY, MODEL_CACHE_DIRECTORY | Persistent /app/var/uploads and /app/var/models foundations |
-| LLM_PROVIDER/MODEL/API_KEY | Optional actual Responses adapter; missing credentials return AI_SERVICE_UNAVAILABLE while core services remain operational |
+| LLM_PROVIDER, LLM_MODEL, GROQ_API_KEY, LLM_API_KEY | Optional assistant provider/model and private credential. Groq uses GROQ_API_KEY and OpenAI uses LLM_API_KEY. |
 | EMBEDDING_MODEL, EMBEDDING_MODEL_REVISION | Pinned E5 base selected by PHASE 12 evaluation; see SEMANTIC_SEARCH.md for download/generation and immutable revision |
 
 Pydantic validates configuration at process creation. Database/cache passwords require 16+ non-default characters; operator-provisioned role passwords require at least 32. The initializer generates stronger random values. Business defaults are now migration data in `system_settings`; business services read them for each operation. Secrets are not supplied to frontend containers or browser bundles.
@@ -157,11 +157,10 @@ affecting catalog/circulation. PHASE 14 used native training and verified Docker
 
 ## Assistant provider
 
-LLM_PROVIDER=openai, LLM_MODEL=<account-accessible Responses tool model>,
-LLM_API_KEY=<private credential>. Existing Compose passes these server-side only.
-Restart backend after changes. Empty settings keep the assistant safely unavailable
-and all local/core services working. Live external inference needs operator
-credentials and quality validation; PHASE 15 verified the controlled boundary.
+Configure the provider in the private Compose environment file and recreate the
+backend with the same Compose files and project name used to start it.
+The [assistant setup guide](AI_ASSISTANT.md#configuration-and-unavailable-behavior)
+lists Groq and OpenAI settings and a reader-facing availability check.
 
 ## Report dependencies
 

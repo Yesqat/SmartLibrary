@@ -46,3 +46,8 @@ export const catalogApi = {
       `/${kind}?${queryString({ q, page, include_archived: archived })}`,
     ),
 };
+
+export const bookDetailQuery = (id: string) => ({
+  queryKey: ["catalog", "book", id],
+  queryFn: () => catalogApi.book(id),
+});

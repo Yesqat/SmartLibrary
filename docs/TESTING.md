@@ -64,7 +64,7 @@ npm --prefix frontend test
 npm --prefix frontend run build
 ~~~
 
-The complete component suite has **70 tests**. HTTP-boundary component stubs test
+The complete frontend suite has **80 tests**. HTTP-boundary component stubs test
 UI states; real database/browser suites verify business behavior. Generated
 TypeScript comes from docs/openapi.json, never hand-edited contracts.
 
@@ -101,6 +101,18 @@ allow 15 seconds for cold development-route compilation. pages.spec.ts traverses
 application alerts are scoped to main, excluding Next.js's route announcer.
 Workflow cases separately prove verification makes no borrowing until explicit
 issue, Reader history after return and FIFO advancement. See TEST_MATRIX.md.
+
+To verify the public catalog's book-opening transition on the isolated stack:
+
+~~~powershell
+python scripts/run_e2e.py catalog.spec.ts search.spec.ts book-transition.spec.ts --label book-transition
+~~~
+
+The transition suite uploads a portrait cover for its own book and exercises the
+real catalog link at desktop and 390 × 844 viewports. For a visual check, open
+`http://localhost:8081/catalog`, select a cover or focus its link and press Enter,
+then use Back to return to the same search and filters. With the operating
+system's reduced-motion setting enabled, the link opens the detail page directly.
 
 ## ML and reports
 

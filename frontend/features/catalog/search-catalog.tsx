@@ -124,6 +124,7 @@ function SearchCatalogBody() {
                 <BookCard
                   key={book.id}
                   book={book}
+                  animateOpen
                   onOpen={() => {
                     if (user?.role === "READER" && result.data.search_event_id)
                       void searchApi

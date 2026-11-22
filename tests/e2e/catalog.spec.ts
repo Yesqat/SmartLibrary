@@ -60,8 +60,11 @@ test("librarian creates a title, manages a copy and archives safely", async ({
   const row = page.getByRole("row").filter({ hasText: inventory });
   await expect(row).toContainText("Қолжетімді");
   await page.goto(editor.replace("/librarian", ""));
+  const stock = page
+    .getByText("Кітапты кітапханадан алуға болады.", { exact: true })
+    .locator("..");
   await expect(
-    page.getByText("Қолжетімді: 1 / 1", { exact: true }),
+    stock.getByText("Қолжетімді: 1 / 1", { exact: true }),
   ).toBeVisible();
   await page.goto(editor + "/copies");
   await page
@@ -82,7 +85,7 @@ test("librarian creates a title, manages a copy and archives safely", async ({
   ).toContainText("Зақымдалған");
   await page.goto(editor.replace("/librarian", ""));
   await expect(
-    page.getByText("Қолжетімді: 0 / 1", { exact: true }),
+    stock.getByText("Қолжетімді: 0 / 1", { exact: true }),
   ).toBeVisible();
   await page.goto(editor);
   page.once("dialog", (dialog) => dialog.accept());

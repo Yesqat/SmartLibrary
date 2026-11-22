@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import { CircleAlert, RotateCw } from "lucide-react";
 import { BrandMark } from "@/components/ui/brand-mark";
 import { Button } from "@/components/ui/button";
@@ -81,16 +81,24 @@ export function CatalogNavigation({ currentHref }: { currentHref?: string }) {
 
 export function CatalogShell({
   title,
+  titleRef,
   children,
 }: {
   title: string;
+  titleRef?: Ref<HTMLHeadingElement>;
   children: ReactNode;
 }) {
   const { user } = useAuth();
   return (
     <main className={styles.workspace}>
       <CatalogNavigation />
-      <h1 className={styles.title}>{title}</h1>
+      <h1
+        ref={titleRef}
+        tabIndex={titleRef ? -1 : undefined}
+        className={styles.title}
+      >
+        {title}
+      </h1>
       <div
         className={user?.role === "ADMIN" ? styles.adminLayout : styles.layout}
       >

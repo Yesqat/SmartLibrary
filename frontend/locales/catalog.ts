@@ -47,6 +47,7 @@ export const catalog = {
   find: "Іздеу",
   empty: "Жазбалар табылмады.",
   loading: "Жүктелуде…",
+  openingBook: "Кітап ашылуда…",
   retry: "Қайталау",
   previous: "Алдыңғы",
   next: "Келесі",

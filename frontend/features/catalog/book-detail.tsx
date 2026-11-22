@@ -1,21 +1,25 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { useAuth } from "@/features/auth/auth-provider";
 import { apiMutation } from "@/services/api-client";
 import { Cover } from "@/components/books/book-card";
+import { useBookTransition } from "@/components/books/book-transition-provider";
 import { catalog as t } from "@/locales/catalog";
-import { catalogApi } from "./api";
+import { bookDetailQuery } from "./api";
 import { CatalogShell, Failure } from "./shared";
 import { ReserveButton } from "@/features/reservations/reserve-button";
 import { FavoriteButton } from "@/features/reader/favorites";
 import { RecommendationSection } from "@/features/recommendations/section";
 import styles from "./catalog.module.css";
 export function BookDetail({ id }: { id: string }) {
-  const result = useQuery({
-    queryKey: ["catalog", "book", id],
-    queryFn: () => catalogApi.book(id),
-  });
+  const result = useQuery(bookDetailQuery(id));
+  const transition = useBookTransition();
+  const heading = useRef<HTMLHeadingElement>(null);
+  useLayoutEffect(() => {
+    if (heading.current)
+      transition?.detailMounted(id, heading.current, !result.isPending);
+  }, [id, result.isPending, transition]);
   const book = result.data;
   const { user } = useAuth();
   const viewed = useRef("");
@@ -33,7 +37,7 @@ export function BookDetail({ id }: { id: string }) {
     });
   }, [book, user]);
   return (
-    <CatalogShell title={book?.title ?? t.details}>
+    <CatalogShell title={book?.title ?? t.details} titleRef={heading}>
       {result.isPending ? (
         <p role="status">{t.loading}</p>
       ) : result.isError ? (

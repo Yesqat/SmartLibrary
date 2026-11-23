@@ -1,0 +1,9 @@
+.copy {
+  position: fixed;
+  z-index: 40;
+  height: auto;
+  translate: -50% -50%;
+  pointer-events: none;
+  border-radius: 2px;
+  box-shadow: 0 3px 8px #18213526;
+}

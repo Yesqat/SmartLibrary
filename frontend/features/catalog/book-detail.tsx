@@ -16,6 +16,7 @@ export function BookDetail({ id }: { id: string }) {
   const result = useQuery(bookDetailQuery(id));
   const transition = useBookTransition();
   const heading = useRef<HTMLHeadingElement>(null);
+  const cover = useRef<HTMLImageElement>(null);
   useLayoutEffect(() => {
     if (heading.current)
       transition?.detailMounted(id, heading.current, !result.isPending);
@@ -45,7 +46,7 @@ export function BookDetail({ id }: { id: string }) {
       ) : (
         book && (
           <div className={styles.detail}>
-            <Cover book={book} />
+            <Cover book={book} imageRef={cover} />
             <div>
               <p className={styles.byline}>
                 {book.authors.map((a) => a.full_name).join(", ") || t.none}
@@ -59,7 +60,11 @@ export function BookDetail({ id }: { id: string }) {
                   bookId={book.id}
                   available={book.available_copies}
                 />
-                <FavoriteButton bookId={book.id} />
+                <FavoriteButton
+                  bookId={book.id}
+                  coverUrl={book.cover_url}
+                  sourceRef={cover}
+                />
                 <p className="mt-2 text-sm">
                   {t.shelves}: {book.shelf_locations.join(", ") || t.none}
                 </p>

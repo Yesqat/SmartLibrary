@@ -2,13 +2,19 @@
 import Image from "next/image";
 import Link from "next/link";
 import { BookOpen, Library } from "lucide-react";
-import { useRef, useState } from "react";
+import { type Ref, useRef, useState } from "react";
 import type { Book } from "@/features/catalog/api";
 import { catalog as t } from "@/locales/catalog";
 import { useBookTransition } from "./book-transition-provider";
 import styles from "./book-card.module.css";
 
-export function Cover({ book }: { book: Book }) {
+export function Cover({
+  book,
+  imageRef,
+}: {
+  book: Book;
+  imageRef?: Ref<HTMLImageElement>;
+}) {
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
   return (
     <div
@@ -17,6 +23,7 @@ export function Cover({ book }: { book: Book }) {
     >
       {book.cover_url && book.cover_url !== failedUrl ? (
         <Image
+          ref={imageRef}
           src={book.cover_url}
           alt={book.title}
           data-book-cover-image=""

@@ -36,7 +36,9 @@ export function CatalogNavigation({ currentHref }: { currentHref?: string }) {
         <>
           <Link href="/reservations">{rt.reservations}</Link>
           <Link href="/my-books">{rt.loans}</Link>
-          <Link href="/favorites">{rt.favorites}</Link>
+          <Link href="/favorites" data-favorites-target="">
+            {rt.favorites}
+          </Link>
           <Link href="/notifications">{rt.notifications}</Link>
           <Link
             href="/assistant"

@@ -6,6 +6,7 @@ import { type Ref, useRef, useState } from "react";
 import type { Book } from "@/features/catalog/api";
 import { catalog as t } from "@/locales/catalog";
 import { useBookTransition } from "./book-transition-provider";
+import { useBookHover } from "./use-book-hover";
 import styles from "./book-card.module.css";
 
 export function Cover({
@@ -51,32 +52,45 @@ export function BookCard({
   staffRoot,
   onOpen,
   animateOpen = false,
+  animateHover = false,
 }: {
   book: Book;
   staffRoot?: string;
   onOpen?: () => void;
   animateOpen?: boolean;
+  animateHover?: boolean;
 }) {
   const link = useRef<HTMLAnchorElement>(null);
   const transition = useBookTransition();
+  const hoverEnabled = animateHover && !staffRoot;
+  const { handlers, reset } = useBookHover(hoverEnabled, book);
   const href = staffRoot
     ? `${staffRoot}/books/${book.id}`
     : `/books/${book.id}`;
   return (
-    <article className={styles.card}>
+    <article
+      className={
+        hoverEnabled ? `${styles.card} ${styles.tiltable}` : styles.card
+      }
+      {...handlers}
+    >
       <Link
         ref={link}
         aria-label={book.title}
         onClick={onOpen}
         href={href}
         onNavigate={(event) => {
-          if (
-            animateOpen &&
-            !staffRoot &&
-            link.current &&
-            transition?.open(book, link.current, href)
-          )
-            event.preventDefault();
+          const anchor = link.current;
+          if (!animateOpen || staffRoot || !anchor || !transition) return;
+          if (hoverEnabled) {
+            reset();
+            anchor.dataset.measuringCover = "";
+          }
+          try {
+            if (transition.open(book, anchor, href)) event.preventDefault();
+          } finally {
+            if (hoverEnabled) delete anchor.dataset.measuringCover;
+          }
         }}
         className={styles.link}
       >

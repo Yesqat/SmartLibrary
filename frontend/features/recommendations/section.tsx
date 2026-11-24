@@ -71,6 +71,7 @@ export function RecommendationCard({
     <div ref={element} className={styles.item}>
       <BookCard
         book={item.book}
+        animateHover
         onOpen={() => {
           // An explicit click proves rendering even if it precedes the dwell threshold.
           void record()

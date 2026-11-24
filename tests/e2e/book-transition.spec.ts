@@ -1,5 +1,10 @@
 import { randomUUID } from "node:crypto";
-import { expect, test } from "../../frontend/node_modules/@playwright/test";
+import {
+  expect,
+  test,
+  type Locator,
+  type Page,
+} from "../../frontend/node_modules/@playwright/test";
 import { apiLogin } from "./library-helpers";
 
 test.use({ trace: "off", video: "off", screenshot: "off" });
@@ -59,6 +64,57 @@ test.afterAll(async ({ request }) => {
   ).toBe(true);
 });
 
+async function openTiltedCover(page: Page, image: Locator) {
+  const flat = await image.evaluate((img: HTMLImageElement) => {
+    const box = img.getBoundingClientRect();
+    const css = getComputedStyle(img);
+    const fit = Math.min(
+      (box.width - 2 * parseFloat(css.paddingLeft)) / img.naturalWidth,
+      (box.height - 2 * parseFloat(css.paddingTop)) / img.naturalHeight,
+    );
+    return {
+      x: box.x + box.width / 2,
+      y: box.y + box.height / 2,
+      width: img.naturalWidth * fit,
+      height: img.naturalHeight * fit,
+      pointerX: box.x + box.width * 0.9,
+      pointerY: box.y + box.height * 0.2,
+    };
+  });
+  await page.mouse.move(flat.pointerX, flat.pointerY);
+  await expect
+    .poll(() =>
+      image.evaluate((img) =>
+        Math.abs(new DOMMatrix(getComputedStyle(img).transform).m13),
+      ),
+    )
+    .toBeGreaterThan(0.025);
+  await image.evaluate(async (img) => {
+    await Promise.allSettled(img.getAnimations().map((a) => a.finished));
+  });
+  await page.mouse.down();
+  await page.mouse.up();
+  // Inspect the actual first 3D flight keyframe; the source is hidden during handoff.
+  const start = await page.locator(overlay).evaluate((stage, href) => {
+    const flight = stage.querySelector<HTMLElement>(":scope > [style]")!;
+    const effect = flight.getAnimations()[0].effect as KeyframeEffect;
+    const origin = new DOMMatrix(String(effect.getKeyframes()[0].transform));
+    const img = document.querySelector(`article a[href="${href}"] img`)!;
+    return {
+      left: origin.m41,
+      top: origin.m42,
+      width: parseFloat(flight.style.width),
+      height: parseFloat(flight.style.height),
+      hidden: getComputedStyle(img).visibility,
+    };
+  }, `/books/${bookId}`);
+  expect(start.hidden).toBe("hidden");
+  expect(start.left + start.width / 2).toBeCloseTo(flat.x, 0);
+  expect(start.top + start.height / 2).toBeCloseTo(flat.y - 4, 0);
+  expect(start.width).toBeCloseTo(flat.width * 1.035, 0);
+  expect(start.height).toBeCloseTo(flat.height * 1.035, 0);
+}
+
 for (const viewport of [
   { width: 1280, height: 800 },
   { width: 390, height: 844 },
@@ -78,7 +134,7 @@ for (const viewport of [
       await card.focus();
       await page.keyboard.press("Enter");
     } else {
-      await image.click();
+      await openTiltedCover(page, image);
     }
     await expect(page.locator(overlay)).toBeAttached();
     await expect(page).toHaveURL(new RegExp(`/books/${bookId}$`));
@@ -100,6 +156,26 @@ for (const viewport of [
     await expect(page.locator(overlay)).toHaveCount(0);
   });
 }
+
+test.describe("touch catalog", () => {
+  test.use({
+    viewport: { width: 390, height: 844 },
+    hasTouch: true,
+    isMobile: true,
+  });
+  test("a single tap opens a loaded cover", async ({ page }) => {
+    await page.goto(catalogUrl);
+    const card = page.getByRole("link", { name: title, exact: true });
+    await card.locator("img").evaluate((img: HTMLImageElement) => img.decode());
+    expect(
+      await page.evaluate(() => matchMedia("(pointer: coarse)").matches),
+    ).toBe(true);
+    await card.tap();
+    await expect(page).toHaveURL(new RegExp(`/books/${bookId}$`));
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(title);
+    await expect(page.locator(overlay)).toHaveCount(0);
+  });
+});
 
 test("a pending book request exposes loading and recovers on the real response", async ({
   page,

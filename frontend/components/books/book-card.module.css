@@ -150,9 +150,43 @@
   transition: scale 280ms cubic-bezier(0.2, 0.65, 0.3, 1);
 }
 
-.link:hover :is(.image, .jacket),
+:where(.card:not(.tiltable)) .link:hover :is(.image, .jacket),
 .link:focus-visible :is(.image, .jacket) {
   scale: 1.035;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .tiltable :is(.image, .jacket) {
+    transition-property: transform, translate, scale, filter, box-shadow;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.2, 0.65, 0.3, 1);
+  }
+
+  .tiltable[data-book-hover-active] :is(.image, .jacket) {
+    translate: 0 -4px;
+    scale: 1.035;
+    transform: perspective(960px) rotateX(calc(-6deg * var(--hover-y)))
+      rotateY(calc(8deg * var(--hover-x))) rotateZ(var(--jacket-angle, 0deg));
+    transition-duration: 190ms;
+  }
+
+  .tiltable[data-book-hover-active] .image {
+    filter: drop-shadow(
+      calc(3px - 4px * var(--hover-x)) calc(9px - 3px * var(--hover-y)) 6px
+        #18213536
+    );
+  }
+
+  .tiltable[data-book-hover-active] .jacket {
+    --jacket-angle: -4deg;
+    box-shadow: calc(3px - 4px * var(--hover-x))
+      calc(9px - 3px * var(--hover-y)) 8px #1b294438;
+  }
+
+  /* Opening measures the flat artwork at its current lift and uniform scale. */
+  .tiltable .link[data-measuring-cover] :is(.image, .jacket) {
+    transition-property: translate, scale;
+  }
 }
 
 .author,

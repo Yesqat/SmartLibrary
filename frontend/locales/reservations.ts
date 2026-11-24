@@ -11,6 +11,8 @@ export const reservations = {
   all: "Барлығы",
   number: "Бронь нөмірі",
   created: "Брондалған уақыт",
+  createdReady: "Кітап брондалды. Алуға дайын.",
+  createdWaiting: "Күту кезегіне қосылдыңыз.",
   expires: "Алу мерзімі",
   position: "Кезектегі орын",
   queueNote:

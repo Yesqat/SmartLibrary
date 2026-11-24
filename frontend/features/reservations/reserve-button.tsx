@@ -1,12 +1,15 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useLayoutEffect, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/features/auth/auth-provider";
 import { Failure } from "@/features/catalog/shared";
 import { reservations as t } from "@/locales/reservations";
+import { getAuthState } from "@/services/api-client";
 import { reservationApi } from "./api";
+import { recordCreationFeedback } from "./creation-feedback";
 
 export function ReserveButton({
   bookId,
@@ -18,9 +21,17 @@ export function ReserveButton({
   const { user, status } = useAuth();
   const router = useRouter();
   const cache = useQueryClient();
+  const submitting = useRef(false);
+  useLayoutEffect(
+    () => () => {
+      submitting.current = false;
+    },
+    [bookId, user?.id],
+  );
   const action = useMutation({
-    mutationFn: () => reservationApi.create(bookId),
-    onSuccess: async (row) => {
+    mutationFn: (request: { bookId: string; userId: string }) =>
+      reservationApi.create(request.bookId),
+    onSuccess: async (row, request) => {
       await Promise.all([
         cache.invalidateQueries({ queryKey: ["catalog"] }),
         cache.invalidateQueries({ queryKey: ["recommendations"] }),
@@ -30,7 +41,22 @@ export function ReserveButton({
         cache.invalidateQueries({ queryKey: ["notifications"] }),
         cache.invalidateQueries({ queryKey: ["favorites"] }),
       ]);
+      try {
+        const current = getAuthState().user;
+        if (
+          submitting.current &&
+          current?.role === "READER" &&
+          current.id === request.userId &&
+          row.book_id === request.bookId
+        )
+          recordCreationFeedback(cache, current.id, row);
+      } catch {
+        // Decorative feedback must never prevent navigation to the saved reservation.
+      }
       router.push(`/reservations/${row.id}`);
+    },
+    onError: () => {
+      submitting.current = false;
     },
   });
   if (status === "loading") return <p role="status">{t.loading}</p>;
@@ -47,7 +73,11 @@ export function ReserveButton({
     <div className="mt-4 space-y-3">
       <Button
         disabled={action.isPending || action.isSuccess}
-        onClick={() => action.mutate()}
+        onClick={() => {
+          if (submitting.current) return;
+          submitting.current = true;
+          action.mutate({ bookId, userId: user.id });
+        }}
       >
         {action.isPending ? t.loading : available > 0 ? t.reserve : t.wait}
       </Button>

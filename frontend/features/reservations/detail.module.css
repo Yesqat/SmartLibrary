@@ -19,6 +19,65 @@
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
+.introText,
+.cover {
+  position: relative;
+}
+.concealed {
+  visibility: hidden;
+}
+.created {
+  position: absolute;
+  inset: 0;
+  color: #216040;
+  font-weight: 600;
+  animation: message-fade 3600ms ease-out both;
+}
+.ribbon {
+  position: absolute;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, #ffffff20, transparent 30%, #0001), #216040;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
+  transform-origin: top center;
+  animation: ribbon-drop 500ms ease-out both;
+}
+.ribbon[data-state="WAITING"] {
+  background-color: #75480b;
+}
+.created[data-state="WAITING"] {
+  color: #75480b;
+}
+@keyframes ribbon-drop {
+  0% {
+    transform: translateY(-18%) scaleY(0.35);
+    opacity: 0;
+  }
+  72% {
+    transform: translateY(1px) scaleY(1.04);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scaleY(1);
+  }
+}
+@keyframes message-fade {
+  0%,
+  88% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .created {
+    animation: none;
+  }
+  .ribbon {
+    display: none;
+  }
+}
 .card {
   padding: clamp(1.2rem, 3.2vw, 2.3rem);
   border: 1px solid var(--border);
